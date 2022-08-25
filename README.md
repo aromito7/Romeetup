@@ -1,11 +1,10 @@
 # API-project
-My first a/A project
 
-# `<name of application here>`
+# `Meetup: My first a/A project`
 
 ## Database Schema Design
 
-`<insert database schema design here>`
+![DB Schema](/images/schema.png)
 
 ## API Documentation
 
