@@ -5,18 +5,34 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('Groups', [
       {
-        name: 'Study Group',
+        name: 'Homework Squad',
         about: 'a/A June 2022 Cohort',
-        type: 'programming',
+        type: 'educational',
         private: true
       },
+      {
+        name: 'Tennis Group',
+        about: 'Local Tennis Players',
+        type: 'athletic',
+        private: false,
+        city: 'Pittsburgh',
+        state: "PA"
+      },
+      {
+        name: 'Cross Country Team',
+        about: 'Highschool Team',
+        type: 'athletic',
+        private: false,
+        city: 'Murrysville',
+        state: "PA"
+      }
     ], {});
   },
 
   down: async (queryInterface, Sequelize) => {
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete('Groups', {
-      username: { [Op.in]: ['Demo-lition', 'FakeUser1', 'FakeUser2'] }
+      name: { [Op.in]: ['Homeworkd Squad', 'Tennis Group', 'Cross Country Team'] }
     }, {});
   }
 };

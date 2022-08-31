@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      organizerid: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'User',
+            key: 'id',
+        },
+        onDelete: 'cascade'
+      },
       name: {
         type: Sequelize.STRING,
         allowNull: false
@@ -38,6 +46,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      numMembers: {
+        type: Sequelize.INTEGER
+      },
+      previewImage: {
+        type: Sequelize.BLOB
       }
     });
   },

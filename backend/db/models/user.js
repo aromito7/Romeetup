@@ -8,6 +8,11 @@ const bcrypt = require('bcryptjs');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
 
+    static associate(models) {
+      User.hasMany(models.Group, {foreignKey: 'organizerId'});
+    }
+
+
     static async signup({ firstName, lastName, username, email, password }) {
       const hashedPassword = bcrypt.hashSync(password);
       const user = await User.create({
@@ -47,10 +52,8 @@ module.exports = (sequelize, DataTypes) => {
       const { id, username, email } = this; // context will be the User instance
       return { id, username, email };
     }
-    static associate(models) {
-      // define association here
-    }
   };
+
 
   User.init(
     {
