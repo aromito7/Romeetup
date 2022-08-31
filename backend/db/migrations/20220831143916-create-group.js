@@ -8,13 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      organizerid: {
+      organizerId: {
         type: Sequelize.INTEGER,
         references: {
-            model: 'User',
+            model: 'Users',
             key: 'id',
         },
-        onDelete: 'cascade'
+        onDelete: 'cascade',
+        allowNull:false
       },
       name: {
         type: Sequelize.STRING,
@@ -51,7 +52,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       previewImage: {
-        type: Sequelize.BLOB
+        type: Sequelize.STRING
       }
     });
   },

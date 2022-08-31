@@ -37,7 +37,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     city: DataTypes.STRING,
-    state: DataTypes.STRING
+    state: DataTypes.STRING,
+    numMembers: DataTypes.INTEGER,
+    previewImage: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Group',
