@@ -19,11 +19,17 @@ const validateCreation = [
     .withMessage('About must be 50 characters or more'),
   check('type')
     .exists({ checkFalsy: true })
-    .custom((type) => ['online', 'in person'].contains(type.toLowerCase()))
+    .custom((type) => ['online', 'in person'].includes(type.toLowerCase()))
     .withMessage("Type must be 'Online' or 'In person'"),
   check('private')
     .isBoolean()
     .withMessage('Private must be a boolean'),
+  check('city')
+    .exists({ checkFalsy: true })
+    .withMessage('City is required'),
+  check('state')
+    .exists({ checkFalsy: true })
+    .withMessage('State is required'),
   handleValidationErrors
 ];
 
@@ -66,6 +72,61 @@ router.get(
     return res.json({
       groups
     });
+  }
+);
+
+router.put(
+  '/:groupId',
+  validateCreation,
+  async (req, res) => {
+    const { groupId } = req.params;
+    const { name, about, type, private, city, state } = req.body
+    const fields = {name, about, type, private, city, state}
+
+    const group = await Group.findByPk(groupId);
+
+    if(group){
+      for(i in fields){
+        if(fields[i] !== undefined)
+          //console.log(`${i}: ${fields[i]}`)
+          group[i] = fields[i]
+      }
+
+      group.save()
+      res.json({group})
+    }
+    else{
+      res.statusCode = 404
+      res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
+  }
+);
+
+router.delete(
+  '/:groupId',
+  async (req, res) => {
+    const { groupId } = req.params;
+
+    const group = await Group.findByPk(groupId);
+
+    if(group){
+
+      group.destroy()
+      res.json({
+        message: "Successfully deleted",
+        statusCode: 200
+      })
+    }
+    else{
+      res.statusCode = 404
+      res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
   }
 );
 
