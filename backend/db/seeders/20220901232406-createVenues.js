@@ -16,17 +16,17 @@ module.exports = {
         address: "a/A Discord",
         city: "Discord",
         state: "The Internet",
-        lat: 420.69,
-        lng: 69.420
+        lat: 420,
+        lng: 69
       },
       {
         address: "Arsenal Tennis Courts",
         city: "Pittsburgh",
         state: "PA",
-        lat: 40.4664,
-        lng: 79.9609
+        lat: 40,
+        lng: 79
       }
-     ])
+     ], {});
   },
 
   async down (queryInterface, Sequelize) {
@@ -38,7 +38,7 @@ module.exports = {
      */
      const Op = Sequelize.Op;
      return queryInterface.bulkDelete('Venues', {
-       id: { [Op.in]: [...Array(3).keys()].map(key => key + 1) }
+       id: { [Op.in]: [...Array(2).keys()].map(key => key + 1) }
      }, {});
   }
 };
