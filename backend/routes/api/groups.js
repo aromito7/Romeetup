@@ -22,10 +22,17 @@ router.get(
 router.get(
   '/current',
   async (req, res) => {
-    const groups = await Group.findAll({});
-    return res.json({
-      groups
-    });
+    const { user } = req;
+    if (user) {
+      const groups = await Group.findAll({
+        where: {
+          id: user.toSafeObject().id
+        }
+      });
+      return res.json({
+        groups
+      });
+    }
   }
 );
 
