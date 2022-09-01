@@ -8,6 +8,30 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
+const validateCreation = [
+  check('name')
+    .exists({ checkFalsy: true })
+    .isLength({ max: 60})
+    .withMessage('Name must be 60 characters or less'),
+  check('about')
+    .exists({ checkFalsy: true })
+    .isLength({ min: 50 })
+    .withMessage('About must be 50 characters or more'),
+  check('type')
+    .exists({ checkFalsy: true })
+    .custom((type) => ['online', 'in person'].contains(type.toLowerCase()))
+    .withMessage("Type must be 'Online' or 'In person'"),
+  check('private')
+    .isBoolean()
+    .withMessage('Private must be a boolean'),
+  check('city')
+    .exists({ checkFalsy: true })
+    .withMessage('City is required'),
+  check('state')
+    .exists({ checkFalsy: true })
+    .withMessage('State is required'),
+  handleValidationErrors
+];
 
 router.get(
   '/',
@@ -53,6 +77,7 @@ router.get(
 
 router.post(
   '/',
+  validateCreation,
   async (req, res) => {
     const { organizerId, name, about, type, private, city, state } = req.body
     const newGroup = await Group.create({ organizerId, name, about, type, private, city, state})
