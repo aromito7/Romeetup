@@ -24,12 +24,6 @@ const validateCreation = [
   check('private')
     .isBoolean()
     .withMessage('Private must be a boolean'),
-  check('city')
-    .exists({ checkFalsy: true })
-    .withMessage('City is required'),
-  check('state')
-    .exists({ checkFalsy: true })
-    .withMessage('State is required'),
   handleValidationErrors
 ];
 
@@ -72,6 +66,32 @@ router.get(
     return res.json({
       groups
     });
+  }
+);
+
+router.post(
+  '/:groupId/images',
+  async (req, res) => {
+    const { groupId } = req.params;
+    const { url, preview } = req.body;
+    const group = await Group.findByPk(groupId);
+    if(group){
+      group.previewImage = url
+      group.save()
+      const {id} = group
+      return res.json({
+        id,
+        url,
+        preview
+      });
+    }
+    else{
+      res.statusCode = 404
+      res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
   }
 );
 
