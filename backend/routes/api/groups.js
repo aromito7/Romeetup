@@ -51,6 +51,16 @@ router.get(
   }
 );
 
+router.post(
+  '/',
+  async (req, res) => {
+    const { organizerId, name, about, type, private, city, state } = req.body
+    const newGroup = await Group.create({ organizerId, name, about, type, private, city, state})
+    return res.json({
+      newGroup
+    });
+  }
+);
 
 
 module.exports = router;
