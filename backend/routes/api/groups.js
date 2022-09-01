@@ -19,6 +19,16 @@ router.get(
   }
 );
 
+router.get(
+  '/current',
+  async (req, res) => {
+    const groups = await Group.findAll({});
+    return res.json({
+      groups
+    });
+  }
+);
+
 
 
 module.exports = router;
