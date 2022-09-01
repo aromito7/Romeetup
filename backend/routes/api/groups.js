@@ -36,6 +36,21 @@ router.get(
   }
 );
 
+router.get(
+  '/:groupId',
+  async (req, res) => {
+    const { groupId } = req.params;
+    const groups = await Group.findAll({
+      where: {
+        id: groupId
+      }
+    });
+    return res.json({
+      groups
+    });
+  }
+);
+
 
 
 module.exports = router;
