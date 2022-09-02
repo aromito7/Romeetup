@@ -19,26 +19,23 @@ const validateLogin = [
 
 // Log in
 router.post(
-    '/',
-    async (req, res, next) => {
-      const { credential, password } = req.body;
+  '/:groupId/',
+  async (req, res, next) => {
+    const { groupId } = req.params
+    const { address, city, state, lat, lng } = req.body
 
-      const user = await User.login({ credential, password });
+    const newVenue = await Venue.create({
+      groupId,
+      address,
+      city,
+      state,
+      lat,
+      lng
+    });
 
-      if (!user) {
-        const err = new Error('Login failed');
-        err.status = 401;
-        err.title = 'Login failed';
-        err.errors = ['The provided credentials were invalid.'];
-        return next(err);
-      }
-
-      await setTokenCookie(res, user);
-
-      return res.json({
-        user
-      });
-    }
+    return res.json({
+      newVenue
+    });
   );
 
 

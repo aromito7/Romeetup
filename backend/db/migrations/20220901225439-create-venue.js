@@ -8,6 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      organizerId: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       address: {
         type: Sequelize.STRING,
         allowNull: false
@@ -21,22 +25,26 @@ module.exports = {
         allowNull: false
       },
       lat: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
+        allowNull: false
       },
       lng: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('venues');
+    await queryInterface.dropTable('Venues');
   }
 };

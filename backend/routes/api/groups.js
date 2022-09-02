@@ -2,7 +2,7 @@
 const express = require('express');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Group } = require('../../db/models');
+const { Group, Venue } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
@@ -153,6 +153,27 @@ router.post(
         statusCode: 404
       })
     }
+  }
+);
+
+router.post(
+  '/:groupId/venues',
+  async (req, res, next) => {
+    const { groupId } = req.params
+    const { address, city, state, lat, lng } = req.body
+    console.log(Venue)
+    const newVenue = await Venue.create({
+      groupId,
+      address,
+      city,
+      state,
+      lat,
+      lng
+    });
+
+    return res.json({
+      newVenue
+    });
   }
 );
 

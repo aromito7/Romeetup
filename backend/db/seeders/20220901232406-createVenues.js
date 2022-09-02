@@ -5,6 +5,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('Venues', [
       {
+        organizerId: 1,
         address: "a/A Discord",
         city: "Discord",
         state: "The Internet",
@@ -12,6 +13,7 @@ module.exports = {
         lng: 69.420
       },
       {
+        organizerId: 3,
         address: "Arsenal Tennis Courts",
         city: "Pittsburgh",
         state: "PA",
@@ -23,8 +25,8 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete('Users', {
-      username: { [Op.in]: ['Demo-lition', 'FakeUser1', 'FakeUser2'] }
+    return queryInterface.bulkDelete('Venues', {
+      id: { [Op.in]: [...Array(2).keys()].map(key => key + 1) }
     }, {});
   }
 };

@@ -14,23 +14,27 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Venue.init({
+    organizerId:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     address: {
       type: DataTypes.STRING,
-      allowNull:false
+      allowNull: false
     },
     city: {
       type: DataTypes.STRING,
-      allowNull:false
+      allowNull: false
     },
     state: {
       type: DataTypes.STRING,
-      allowNull:false
+      allowNull: false
     },
     lat: DataTypes.FLOAT,
     lng: DataTypes.FLOAT
   }, {
     sequelize,
-    modelName: 'venue',
+    modelName: 'Venue',
   });
   return Venue;
 };
