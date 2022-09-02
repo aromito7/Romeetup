@@ -5,7 +5,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('Venues', [
       {
-        organizerId: 1,
+        groupId: 1,
         address: "a/A Discord",
         city: "Discord",
         state: "The Internet",
@@ -13,7 +13,7 @@ module.exports = {
         lng: 69.420
       },
       {
-        organizerId: 3,
+        groupId: 3,
         address: "Arsenal Tennis Courts",
         city: "Pittsburgh",
         state: "PA",
