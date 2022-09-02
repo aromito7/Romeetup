@@ -1,7 +1,7 @@
 // backend/routes/api/session.js
 const express = require('express');
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { User } = require('../../db/models');
+const { User, Venue } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -18,25 +18,16 @@ const validateLogin = [
 ];
 
 // Log in
-router.post(
-  '/:groupId/',
+router.get(
+  '/',
   async (req, res, next) => {
-    const { groupId } = req.params
-    const { address, city, state, lat, lng } = req.body
 
-    const newVenue = await Venue.create({
-      groupId,
-      address,
-      city,
-      state,
-      lat,
-      lng
-    });
+    const venues = await Venue.findAll({});
 
     return res.json({
-      newVenue
+      venues
     });
-  );
+  });
 
 
   module.exports = router;
