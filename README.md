@@ -4,7 +4,7 @@
 
 ## Database Schema Design
 
-![DB Schema](/images/schema.png)
+![DB Schema](/images/meetup_dbdiagram.png)
 ## API Documentation
 
 ## USER AUTHENTICATION/AUTHORIZATION
