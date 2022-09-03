@@ -11,14 +11,21 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+     return queryInterface.bulkInsert('EventImages', [
+      {
+        eventId: 1,
+        url: "https://www.mooc.org/hubfs/what-computer-programming-jobs-offer-remote-work-jpg.jpeg",
+        preview: true
+      },
+      {
+        eventId: 2,
+        url: "https://www.naomiosaka.com/wp-content/uploads/2021/05/naomi-tennis-pro.jpg",
+        preview: true
+      }
+    ], {});
   },
-
   async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
+    const Op = Sequelize.Op;
+    return queryInterface.bulkDelete('EventImages', {}, {});
   }
 };

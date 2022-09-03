@@ -26,7 +26,7 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete('Venues', {
-      id: { [Op.in]: [...Array(2).keys()].map(key => key + 1) }
+      address: { [Op.in]: ["a/A Discord", "Arsenal Tennis Courts"] }
     }, {});
   }
 };

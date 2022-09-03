@@ -40,7 +40,7 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete('Groups', {
-      name: { [Op.in]: ['Homeworkd Squad', 'Tennis Group', 'Cross Country Team'] }
+      name: { [Op.in]: ["Homework Squad", "Tennis Group", "Cross Country Team"] }
     }, {});
   }
 };

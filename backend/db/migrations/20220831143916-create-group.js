@@ -38,6 +38,12 @@ module.exports = {
       state: {
         type: Sequelize.STRING
       },
+      numMembers: {
+        type: Sequelize.INTEGER
+      },
+      previewImage: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -47,12 +53,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      numMembers: {
-        type: Sequelize.INTEGER
-      },
-      previewImage: {
-        type: Sequelize.STRING
       }
     });
   },

@@ -11,14 +11,21 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+     return queryInterface.bulkInsert('Attendees', [
+      {
+        eventId: 1,
+        userId: 1,
+        status: "Attending"
+      },
+      {
+        eventId: 2,
+        userId: 3,
+        status: "Not Attending"
+      }
+    ], {});
   },
-
   async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
+    const Op = Sequelize.Op;
+    return queryInterface.bulkDelete('Attendees', {}, {});
   }
 };
