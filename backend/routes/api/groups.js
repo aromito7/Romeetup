@@ -2,7 +2,7 @@
 const express = require('express');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Group, Venue } = require('../../db/models');
+const { Group, Venue, Event } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const venue = require('../../db/models/venue');
@@ -225,10 +225,74 @@ router.get(
   async (req, res, next) => {
     const { groupId } = req.params
     const venue = await Venue.findByPk(groupId)
+    if(venue){
+      return res.json({
+        Venues: venue
+      });
+    }else{
+      res.statusCode = 404
+      return res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
+  }
+);
 
-    return res.json({
-      Venues: venue
-    });
+router.get(
+  '/:groupId/events',
+  async (req, res, next) => {
+    const { groupId } = req.params
+    const event = await Event.findByPk(groupId)
+    if(event){
+      return res.json({
+        Events: event
+      });
+    }else{
+      res.statusCode = 404
+      return res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
+  }
+);
+
+router.post(
+  '/:groupId/events',
+  validateVenue,
+  async (req, res, next) => {
+    const { groupId } = req.params
+    const group = await Group.findByPk(groupId)
+    if(group){
+      const { address, city, state, lat, lng } = req.body
+      console.log(Venue)
+      const newVenue = await Venue.create({
+        groupId,
+        address,
+        city,
+        state,
+        lat,
+        lng
+      });
+
+      return res.json({
+        id: venue.id,
+        groupId,
+        address,
+        city,
+        state,
+        lat,
+        lng
+      });
+    }else{
+      res.status = 404
+      res.message = "Group couldn't be found"
+      return res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
   }
 );
 
