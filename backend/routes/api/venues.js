@@ -6,28 +6,54 @@ const router = express.Router();
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
-const validateLogin = [
-  check('credential')
+const validateVenue = [
+  check('address')
     .exists({ checkFalsy: true })
-    .notEmpty()
-    .withMessage('Please provide a valid email or username.'),
-  check('password')
+    .withMessage('Street address is required'),
+  check('city')
     .exists({ checkFalsy: true })
-    .withMessage('Please provide a password.'),
+    .withMessage('City is required'),
+  check('state')
+    .exists({ checkFalsy: true })
+    .withMessage('State is required'),
+  check('lat')
+    .exists({ checkFalsy: true })
+    .withMessage('Latitude is not valid'),
+  check('lng')
+    .exists({ checkFalsy: true })
+    .withMessage('Latitude is not valid'),
   handleValidationErrors
 ];
 
-// Log in
-router.get(
-  '/',
+router.put(
+  '/:venueId',
+  validateVenue,
   async (req, res, next) => {
+    const { venueId } = req.params
+    const { address, city, state, lat, lgn } = req.body
+    const fields = { address, city, state, lat, lgn }
+    const venue = await Venue.findByPk(venueId);
 
-    const venues = await Venue.findAll({});
+    if(venue){
+      for(i in fields){
+        if(fields[i] !== undefined)
+          //console.log(`${i}: ${fields[i]}`)
+          venue[i] = fields[i]
+      }
 
-    return res.json({
-      venues
-    });
+      venue.save()
+      res.json(venue)
+    }
+    else{
+      res.statusCode = 404
+      res.json({
+        message: "Venue couldn't be found",
+        statusCode: 404
+      })
+    }
   });
+
+
 
 
   module.exports = router;

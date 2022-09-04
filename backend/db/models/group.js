@@ -33,7 +33,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validator: {
+        is: /(Online|In person)/i
+      }
     },
     private: {
       type: DataTypes.BOOLEAN,
