@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT,
       allowNull: false
     },
     startDate: {
@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         inFuture(date){
-          if(new Date(date) - new Date(startDate) < 0){
+          if(new Date(date) - new Date(this.startDate) < 0){
             throw new Error("The end date must be after the start date.")
           }
         }
