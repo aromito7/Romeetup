@@ -11,7 +11,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-     return queryInterface.bulkInsert('Attendees', [
+     return queryInterface.bulkInsert('Attendances', [
       {
         eventId: 1,
         userId: 1,
@@ -26,6 +26,6 @@ module.exports = {
   },
   async down (queryInterface, Sequelize) {
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete('Attendees', {}, {});
+    return queryInterface.bulkDelete('Attendances', {}, {});
   }
 };
