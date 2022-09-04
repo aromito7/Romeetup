@@ -26,6 +26,6 @@ module.exports = {
   },
   async down (queryInterface, Sequelize) {
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete('Attendees', {}, {});
+    return queryInterface.bulkDelete('Attendances', {}, {});
   }
 };
