@@ -6,6 +6,7 @@ const { Group, Venue, Event, Membership } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const venue = require('../../db/models/venue');
+const { Op } = require('sequelize');
 
 const router = express.Router();
 
@@ -354,18 +355,27 @@ router.get(
   '/:groupId/members',
   async (req, res, next) => {
     const { groupId } = req.params
-    const members = await Membership.findAll({where: {groupId}})
-    if(members.length){
-      return res.json({
-        Members: members
-      });
-    }else{
+
+    const userIsHost = false;  //needs updated for organizers and cohosts
+    let members
+    if(userIsHost){
+      members = await Membership.findAll({where: {groupId}})
+    }
+    else{
+      members = await Membership.findAll({where: {groupId, status: {[Op.in] : ["co-host", "member"]}}})
+    }
+
+    if(members.length < 1){
       res.statusCode = 404
       return res.json({
         message: "Group couldn't be found",
         statusCode: 404
       })
     }
+
+    return res.json({
+      Members: members
+    });
   }
 );
 

@@ -162,12 +162,10 @@ router.delete(
     }
     const event = await Event.findByPk(eventId, {include: {model: Group, include: Membership}});
 
-    return res.json(event)
-
     if(!event){
       res.statusCode = 404
       return res.json({
-        message: "Event not found",
+        message: "Event couldn't be found",
         statusCode: 404
       })
     }
@@ -180,10 +178,12 @@ router.delete(
         statusCode: 403
       })
     }
+
     event.destroy()
     return res.json({
       message: "Successfully deleted"
     });
+
   }
 )
 
