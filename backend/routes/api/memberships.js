@@ -17,7 +17,6 @@ const validateLogin = [
   handleValidationErrors
 ];
 
-// Log in
 router.get(
   '/',
   async (req, res, next) => {
@@ -28,6 +27,8 @@ router.get(
       memberships
     });
   });
+
+
 
 
   module.exports = router;

@@ -6,12 +6,12 @@ module.exports = {
       {
         userId: 1,
         groupId: 1,
-        status: "Active"
+        status: "co-host"
       },
       {
         userId: 3,
         groupId: 2,
-        status: "Inactive"
+        status: "co-host"
       }
     ], {});
   },

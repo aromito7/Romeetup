@@ -2,7 +2,7 @@
 const express = require('express');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Group, Venue, Event } = require('../../db/models');
+const { Group, Venue, Event, Membership } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const venue = require('../../db/models/venue');
@@ -262,10 +262,10 @@ router.get(
   '/:groupId/events',
   async (req, res, next) => {
     const { groupId } = req.params
-    const event = await Event.findByPk(groupId)
-    if(event){
+    const events = await Event.findAll({where: {groupId}})
+    if(events){
       return res.json({
-        Events: event
+        Events: events
       });
     }else{
       res.statusCode = 404
@@ -329,6 +329,25 @@ router.post(
     return res.json({
       newGroup
     });
+  }
+);
+
+router.get(
+  '/:groupId/members',
+  async (req, res, next) => {
+    const { groupId } = req.params
+    const members = await Membership.findAll({where: {groupId}})
+    if(members.length){
+      return res.json({
+        Members: members
+      });
+    }else{
+      res.statusCode = 404
+      return res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
   }
 );
 

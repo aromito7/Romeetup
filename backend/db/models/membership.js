@@ -25,7 +25,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate:{
+        is: /^(pending|member|co-host)$/i
+      }
     },
   }, {
     sequelize,
