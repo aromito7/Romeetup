@@ -115,8 +115,22 @@ router.post(
   '/:eventId/images',
   restoreUser,
   async (req, res) => {
+    const { user } = req;
+    if (!user) {
+      return res.json({"Message": "Not logged in."})
+    }
+
     const {eventId} = req.params;
-    const event = await Event.findByPk(eventId)
+    const event = await Event.findByPk(eventId, {include: "Group"})
+    if(!event){
+      res.statusCode = 404
+      res.message = "Event couldn't be found"
+      return res.json({
+        message: res.message,
+        statusCode: res.statusCode
+      })
+    }
+
     const {url, preview} = req.body
     if(event){
       const newEventImage = await EventImage.create({
@@ -129,34 +143,43 @@ router.post(
         url,
         preview
       })
-    }else{
-      res.statusCode = 404
-      res.message = "Event couldn't be found"
-      return res.json({
-        message: res.message,
-        statusCode: res.statusCode
-      })
     }
   }
 );
 
 router.delete(
   '/:eventId',
-
+  restoreUser,
   async (req, res, next) => {
     const { user } = req;
-    if (user) {
-      const group = await Group.findByPk({
-        where: {
-          organizerId: user.toSafeObject().id
-        }
-      });
+    const { eventId } = req.params;
+    if(!user){
+      res.statusCode = 404
       return res.json({
-        groups
-      });
-    }else{
-      return res.json({"Message": "Not logged in."})
+        "Message": "Not logged in.",
+        statusCode: 404
+      })
     }
+    const event = await Event.findByPk(eventId, {include: "Group"});
+
+    if(!event){
+      res.statusCode = 404
+      return res.json({
+        message: "Event not found",
+        statusCode: 404
+      })
+    }
+    if(event.Group.organizerId !== user.id){
+      res.statusCode = 403
+      return res.json({
+        message: "Only an organizer or co-host can delete an event.",
+        statusCode: 403
+      })
+    }
+    event.destroy()
+    return res.json({
+      message: "Successfully deleted"
+    });
   }
 )
 
