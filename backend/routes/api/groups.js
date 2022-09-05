@@ -351,6 +351,52 @@ router.post(
   }
 );
 
+router.post(
+  '/:groupId/membership',
+  restoreUser,
+  async (req, res, next) => {
+    const {groupId} = req.params
+    const { user } = req;
+    const userId = user.id
+    if (!user) {
+      return res.json({"Message": "Not logged in."})
+    }
+    console.log(userId)
+    const group = await Group.findByPk(groupId, {include: [{model: Membership, where: {userId}}]})
+
+    if(!group){
+      res.statusCode = 404
+      return res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
+
+    if(group.Memberships.length > 0){
+      const message = group.Memberships[0].status === 'pending' ?
+      "Membership has already been requested" :
+      "User is already a member of the group"
+      res.statusCode = 400
+
+      return res.json({
+        message,
+        statusCode: res.statusCode
+      })
+    }
+
+    const newMember = await Membership.create({
+      groupId,
+      userId,
+      status: "pending"
+    })
+    return res.json({
+      groupId,
+      userId,
+      status: "pending"
+    })
+  }
+)
+
 router.get(
   '/:groupId/members',
   async (req, res, next) => {
