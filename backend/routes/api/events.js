@@ -113,6 +113,7 @@ router.put(
 
 router.post(
   '/:eventId/images',
+  restoreUser,
   async (req, res) => {
     const {eventId} = req.params;
     const event = await Event.findByPk(eventId)

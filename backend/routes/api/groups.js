@@ -1,7 +1,7 @@
 // backend/routes/api/users.js
 const express = require('express');
 
-const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
 const { Group, Venue, Event, Membership } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -54,21 +54,36 @@ const validateVenue = [
 ];
 
 const validateEvent = [
-  check('address')
+  check('venueId')
     .exists({ checkFalsy: true })
-    .withMessage('Street address is required'),
-  check('city')
+    .withMessage('Venue does not exist'),
+  check('name')
     .exists({ checkFalsy: true })
-    .withMessage('City is required'),
-  check('state')
+    .isLength({min: 5})
+    .withMessage('Name must be at least 5 characters'),
+  check('type')
     .exists({ checkFalsy: true })
-    .withMessage('State is required'),
-  check('lat')
+    .custom((type) => ['online', 'in person'].includes(type.toLowerCase()))
+    .withMessage("Type must be 'Online' or 'In person'"),
+  check('capacity')
     .exists({ checkFalsy: true })
-    .withMessage('Latitude is not valid'),
-  check('lng')
+    .isNumeric()
+    .withMessage('Capacity must be an integer'),
+  check('price')
     .exists({ checkFalsy: true })
-    .withMessage('Latitude is not valid'),
+    .isNumeric()
+    .withMessage("Price is invalid"),
+  check('description')
+    .exists({ checkFalsy: true })
+    .withMessage("Description is required"),
+  check('startDate')
+    .exists({ checkFalsy: true })
+    .custom((startDate) => new Date(startDate) - new Date() > 0)
+    .withMessage("Start date must be in the future"),
+  check('endDate')
+    .exists({ checkFalsy: true })
+    .custom((endDate, {req}) => new Date(endDate) - new Date(req.body.startDate) > 0)
+    .withMessage("End date must be after the start date"),
   handleValidationErrors
 ];
 
@@ -280,43 +295,46 @@ router.get(
 router.post(
   '/:groupId/events',
   validateEvent,
+  restoreUser,
   async (req, res, next) => {
+    const { user } = req;
     const { groupId } = req.params
+    if (!user) {
+      return res.json({"Message": "Not logged in."})
+    }
     const group = await Group.findByPk(groupId)
-    if(group){
-      const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body
-      console.log(startDate)
-      const newEvent = await Event.create({
-        groupId,
-        venueId,
-        name,
-        type,
-        capacity,
-        price,
-        description,
-        startDate,
-        endDate
-      });
-
+    if(!group){
+      res.statusCode = 404
       return res.json({
-        newEvent
-        // venueId,
-        // name,
-        // type,
-        // capacity,
-        // price,
-        // description,
-        // startDate,
-        // endDate
-      });
-    }else{
-      res.status = 404
-      res.message = "Group couldn't be found"
-      return res.json({
-        message: "Group couldn't be found",
+        message: "Couldn't find group",
         statusCode: 404
       })
     }
+
+    //Need to add permission for co-host once memberships have been created.
+    if(group.organizerId !== user.toSafeObject().id){
+      res.statusCode = 403
+      return res.json({
+        message: "You must be an organizer or co-host to create events.",
+        statusCode: 403
+      })
+    }
+    const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body
+    const newEvent = await Event.create({
+      groupId,
+      venueId,
+      name,
+      type,
+      capacity,
+      price,
+      description,
+      startDate,
+      endDate
+    });
+
+    return res.json({
+      newEvent
+    });
   }
 );
 
