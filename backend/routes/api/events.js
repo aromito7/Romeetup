@@ -1,7 +1,7 @@
 // backend/routes/api/session.js
 const express = require('express');
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { Event, EventImage, Venue, Group } = require('../../db/models');
+const { Event, EventImage, Venue, Group, Membership } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -121,7 +121,7 @@ router.post(
     }
 
     const {eventId} = req.params;
-    const event = await Event.findByPk(eventId, {include: "Group"})
+    const event = await Event.findByPk(eventId, {include: Group})
     if(!event){
       res.statusCode = 404
       res.message = "Event couldn't be found"
@@ -160,7 +160,9 @@ router.delete(
         statusCode: 404
       })
     }
-    const event = await Event.findByPk(eventId, {include: "Group"});
+    const event = await Event.findByPk(eventId, {include: {model: Group, include: Membership}});
+
+    return res.json(event)
 
     if(!event){
       res.statusCode = 404
@@ -169,6 +171,8 @@ router.delete(
         statusCode: 404
       })
     }
+
+    //need to add permission for
     if(event.Group.organizerId !== user.id){
       res.statusCode = 403
       return res.json({

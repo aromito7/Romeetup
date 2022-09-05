@@ -9,9 +9,19 @@ module.exports = {
         status: "co-host"
       },
       {
+        userId: 2,
+        groupId: 1,
+        status: "member"
+      },
+      {
         userId: 3,
         groupId: 2,
         status: "co-host"
+      },
+      {
+        userId: 4,
+        groupId: 2,
+        status: "member"
       }
     ], {});
   },
