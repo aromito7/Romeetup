@@ -84,7 +84,7 @@ router.get(
 
 router.get(
   '/current',
-  async (req, res) => {
+  async (req, res, next) => {
     const { user } = req;
     if (user) {
       const groups = await Group.findAll({
@@ -103,7 +103,7 @@ router.get(
 
 router.get(
   '/:groupId',
-  async (req, res) => {
+  async (req, res, next) => {
     const { groupId } = req.params;
     const groups = await Group.findByPk(groupId)
     if(groups){
@@ -123,7 +123,7 @@ router.get(
 router.put(
   '/:groupId',
   validateCreation,
-  async (req, res) => {
+  async (req, res, next) => {
     const { groupId } = req.params;
     const { name, about, type, private, city, state } = req.body
     const fields = {name, about, type, private, city, state}
@@ -152,7 +152,7 @@ router.put(
 
 router.delete(
   '/:groupId',
-  async (req, res) => {
+  async (req, res, next) => {
     const { groupId } = req.params;
 
     const group = await Group.findByPk(groupId);
@@ -177,7 +177,7 @@ router.delete(
 
 router.post(
   '/:groupId/images',
-  async (req, res) => {
+  async (req, res, next) => {
     const { groupId } = req.params;
     const { url, preview } = req.body;
     const group = await Group.findByPk(groupId);
@@ -279,7 +279,7 @@ router.get(
 
 router.post(
   '/:groupId/events',
-  //validateEvent,
+  validateEvent,
   async (req, res, next) => {
     const { groupId } = req.params
     const group = await Group.findByPk(groupId)
@@ -323,7 +323,7 @@ router.post(
 router.post(
   '/',
   validateCreation,
-  async (req, res) => {
+  async (req, res, next) => {
     const { organizerId, name, about, type, private, city, state } = req.body
     const newGroup = await Group.create({ organizerId, name, about, type, private, city, state})
     return res.json({

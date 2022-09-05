@@ -53,6 +53,15 @@ router.put(
     }
   });
 
+  router.get(
+    '/',
+    async (req, res, next) => {
+      const venues = await Venue.findAll()
+
+      res.json(venues)
+    }
+  )
+
 
 
 
