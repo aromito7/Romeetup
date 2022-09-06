@@ -183,6 +183,96 @@ router.delete(
   }
 )
 
+router.delete(
+  '/:eventId/attendance',
+  restoreUser,
+  async (req, res, next) => {
+    const { eventId } = req.params
+    const { user } = req
+    const {userId} = req.body
+
+    const event = await Event.findByPk(eventId, {include: [Attendance, {model: Group, include: {model: Membership}}]})
+    if(!event){
+      res.statusCode = 404
+      return res.json({
+        "message": "Event couldn't be found",
+        "statusCode": 404
+      })
+    }
+    const group = await Group.findByPk(event.Group.id, {include: Membership})
+    const [attendance] = event.Attendances.filter(att => att.userId === userId)
+    const [membership] = event.Group.Memberships.filter(mem => mem.userId = user.id)
+
+    if(!attendance){
+      res.statusCode = 404
+      res.json({
+        "message": "Attendance between the user and the event does not exist",
+        "statusCode": 404
+      })
+    }
+
+    if(membership && (event.Group.organizerId === user.id || membership.status.toLowerCase() === "co-host")){
+    }
+    return res.json(attendance)
+  }
+)
+
+router.put(
+  '/:eventId/attendance',
+  restoreUser,
+  async (req, res, next) => {
+    const { eventId } = req.params
+    const { user } = req
+    const {userId, status} = req.body
+
+    const event = await Event.findByPk(eventId, {include: [Attendance, {model: Group, include: {model: Membership}}]})
+    if(!event){
+      res.statusCode = 404
+      return res.json({
+        "message": "Event couldn't be found",
+        "statusCode": 404
+      })
+    }
+    const group = await Group.findByPk(event.Group.id, {include: Membership})
+    const [attendance] = event.Attendances.filter(att => att.userId === userId)
+    const [membership] = event.Group.Memberships.filter(mem => mem.userId = user.id)
+    if(!attendance){
+      res.statusCode = 404
+      res.json({
+        "message": "Attendance between the user and the event does not exist",
+        "statusCode": 404
+      })
+    }
+
+    if(membership && (event.Group.organizerId === user.id || membership.status.toLowerCase() === "co-host")){
+
+      if(!['member', 'waitlist', 'pending'].includes(status.toLowerCase())){
+        res.statusCode = 400
+        return res.json({
+          message: "That is not a valid status for an attendee",
+          statusCode: 400
+        })
+      }
+      if(status.toLowerCase() === "pending"){
+        res.statusCode = 404
+        return res.json({
+          message: "Cannot change an attendance status to pending",
+          statusCode: 400
+        })
+
+      }
+      attendance.status = status
+      attendance.save()
+      return res.json(attendance)
+    }
+
+    return res.json({
+      statusCode: 403,
+      message: "You need to be an organizer or co-host to change status."
+    })
+  }
+)
+
 router.post(
   '/:eventId/attendance',
   restoreUser,
@@ -191,7 +281,7 @@ router.post(
     const { user } = req
 
     const event = await Event.findByPk(eventId, {include: Attendance})
-    const attendance = event.Attendances.filter(att => att.userId === user.id)[0]
+
 
     if(!event){
       res.statusCode = 404
@@ -200,6 +290,8 @@ router.post(
         "statusCode": 404
       })
     }
+
+    const attendance = event.Attendances.filter(att => att.userId === user.id)[0]
 
     if(attendance){
       const status = attendance.status

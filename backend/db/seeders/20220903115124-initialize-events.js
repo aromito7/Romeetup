@@ -25,7 +25,7 @@ module.exports = {
       },
       {
         venueId: 2,
-        groupId: 3,
+        groupId: 2,
         name: "Tennis Tournament",
         description: "Annual tournament held at the end of each summer for all players.",
         type: "In person",
