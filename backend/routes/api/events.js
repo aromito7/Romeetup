@@ -74,13 +74,10 @@ router.put(
   '/:eventId',
   validateEvent,
   async (req, res) => {
-    console.log("Hello, world!")
     const {eventId} = req.params
     const {venueId} = req.body
     const venue = await Venue.findByPk(venueId)
-    console.log("Venue" + venue)
     if(!venue){
-      console.log("hello")
       res.statusCode = 404
       res.message = "Venue couldn't be found"
       return res.json({
@@ -94,7 +91,6 @@ router.put(
     if(event){
       for(i in fields){
         if(fields[i] !== undefined)
-          //console.log(`${i}: ${fields[i]}`)
           event[i] = fields[i]
       }
 

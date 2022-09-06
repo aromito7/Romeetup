@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Group.belongsTo(models.User, {foreignKey: "organizerId"});
       Group.hasMany(models.Membership, {foreignKey: "groupId"})
-      Group.belongsToMany(models.User, { through: models.Membership, uniqueKey: 'groupId' })
+      //Group.belongsToMany(models.User, { through: models.Membership, uniqueKey: 'groupId' })
       Group.hasMany(models.GroupImage, {foreignKey: "groupId"});
       Group.hasMany(models.Venue, {foreignKey: "groupId"});
     }

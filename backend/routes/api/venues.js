@@ -37,7 +37,6 @@ router.put(
     if(venue){
       for(i in fields){
         if(fields[i] !== undefined)
-          //console.log(`${i}: ${fields[i]}`)
           venue[i] = fields[i]
       }
 

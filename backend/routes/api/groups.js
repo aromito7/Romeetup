@@ -149,7 +149,6 @@ router.put(
     if(group){
       for(i in fields){
         if(fields[i] !== undefined)
-          //console.log(`${i}: ${fields[i]}`)
           group[i] = fields[i]
       }
 
@@ -225,7 +224,6 @@ router.post(
     const group = await Group.findByPk(groupId)
     if(group){
       const { address, city, state, lat, lng } = req.body
-      console.log(Venue)
       const newVenue = await Venue.create({
         groupId,
         address,
@@ -357,13 +355,13 @@ router.post(
   async (req, res, next) => {
     const {groupId} = req.params
     const { user } = req;
-    const userId = user.id
     if (!user) {
       return res.json({"Message": "Not logged in."})
     }
-    console.log(userId)
-    const group = await Group.findByPk(groupId, {include: [{model: Membership, where: {userId}}]})
-
+    const userId = user.id
+    const group = await Group.findByPk(groupId, {include: [{model: Membership }]})
+    const memberships = await Membership.findAll()
+    return res.json(group)
     if(!group){
       res.statusCode = 404
       return res.json({
