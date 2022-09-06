@@ -32,7 +32,13 @@ module.exports = {
         userId: 4,
         groupId: 2,
         status: "pending"
+      },
+      {
+        userId: 1,
+        groupId: 2,
+        status: "co-host"
       }
+
     ], {});
   },
   async down (queryInterface, Sequelize) {

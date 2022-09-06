@@ -183,6 +183,50 @@ router.delete(
   }
 )
 
+router.post(
+  '/:eventId/attendance',
+  restoreUser,
+  async (req, res, next) => {
+    const { eventId } = req.params
+    const { user } = req
+
+    const event = await Event.findByPk(eventId, {include: Attendance})
+    const attendance = event.Attendances.filter(att => att.userId === user.id)[0]
+
+    if(!event){
+      res.statusCode = 404
+      return res.json({
+        "message": "Event couldn't be found",
+        "statusCode": 404
+      })
+    }
+
+    if(attendance){
+      const status = attendance.status
+      res.status
+      if(status.toLowerCase() === "pending"){
+        return res.json({
+          "message": "Attendance has already been requested",
+          "statusCode": 400
+        })
+      }else{
+        return res.json({
+          "message": "User is already an attendee of the event",
+          "statusCode": 400
+        })
+      }
+    }
+
+    const newAttendance = Attendance.create({
+      eventId: event.id,
+      userId: user.id,
+      status: "pending"
+    })
+
+    return res.json(newAttendance)
+  }
+)
+
 router.get(
   '/:eventId/attendees',
   restoreUser,
@@ -190,7 +234,7 @@ router.get(
     const {user} = req;
     const {eventId} = req.params;
 
-    //const event = await Event.findByPk(eventId, {include: {model: Attendance, include: {model: User}}})
+    const event = await Event.findByPk(eventId, {include: {model: Group, include: Membership}})
     const attendees = await User.findAll({include: {attributes: ["status"], model: Attendance, where: {eventId}}})
 
 
@@ -201,8 +245,14 @@ router.get(
         statusCode: 404
       })
     }
+    const member = event.Group.Memberships.filter(mem => mem.userId === user.id)[0]
+    //return res.json(member)
+    if(member && (event.Group.organizerId === user.id || member.status.toLowerCase() === "co-host")){
+      return res.json({"Attendees" : attendees})
+    }
 
-    return res.json({"Attendees" : attendees})
+
+    return res.json({"Attendees": attendees.filter(att => att.Attendances[0].status !== "pending")})
   }
 )
 

@@ -20,18 +20,23 @@ module.exports = {
       {
         eventId: 2,
         userId: 3,
-        status: "waitlist"
+        status: "member"
       },
       {
         eventId: 1,
         userId: 2,
-        status: "member"
+        status: "waitlist"
       },
       {
         eventId: 2,
         userId: 4,
         status: "pending"
       },
+      {
+        eventId: 1,
+        userId: 3,
+        status: "pending"
+      }
 
     ], {});
   },
