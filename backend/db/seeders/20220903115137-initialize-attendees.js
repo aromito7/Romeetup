@@ -15,13 +15,24 @@ module.exports = {
       {
         eventId: 1,
         userId: 1,
-        status: "Attending"
+        status: "member"
       },
       {
         eventId: 2,
         userId: 3,
-        status: "Not Attending"
-      }
+        status: "waitlist"
+      },
+      {
+        eventId: 1,
+        userId: 2,
+        status: "member"
+      },
+      {
+        eventId: 2,
+        userId: 4,
+        status: "pending"
+      },
+
     ], {});
   },
   async down (queryInterface, Sequelize) {

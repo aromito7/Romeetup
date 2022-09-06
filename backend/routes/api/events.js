@@ -1,7 +1,7 @@
 // backend/routes/api/session.js
 const express = require('express');
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { Event, EventImage, Venue, Group, Membership } = require('../../db/models');
+const { Event, EventImage, Venue, Group, Membership, Attendance, User } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -180,6 +180,29 @@ router.delete(
       message: "Successfully deleted"
     });
 
+  }
+)
+
+router.get(
+  '/:eventId/attendees',
+  restoreUser,
+  async (req, res, next) => {
+    const {user} = req;
+    const {eventId} = req.params;
+
+    //const event = await Event.findByPk(eventId, {include: {model: Attendance, include: {model: User}}})
+    const attendees = await User.findAll({include: {attributes: ["status"], model: Attendance, where: {eventId}}})
+
+
+    if(!event){
+      res.statusCode = 404
+      return res.json({
+        message: "Event couldn't be found",
+        statusCode: 404
+      })
+    }
+
+    return res.json({"Attendees" : attendees})
   }
 )
 
