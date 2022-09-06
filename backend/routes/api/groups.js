@@ -2,7 +2,7 @@
 const express = require('express');
 
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
-const { Group, Venue, Event, Membership } = require('../../db/models');
+const { Group, Venue, Event, Membership, User } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const venue = require('../../db/models/venue');
@@ -349,6 +349,77 @@ router.post(
   }
 );
 
+router.put(
+  '/:groupId/membership',
+  restoreUser,
+  async (req, res, next) => {
+    const {groupId} = req.params
+    const { user } = req;
+    const { memberId, status } = req.body
+    if (!user) {
+      return res.json({"Message": "Not logged in."})
+    }
+    const group = await Group.findByPk(groupId, {include: [{model: Membership }]})
+
+    if(group.organizerId !== user.id){
+      res.statusCode = 403
+      return res.json({
+        message: "You must be an organizer or co-host to create events.",
+        statusCode: 403
+      })
+    }
+    if(!group){
+      res.statusCode = 404
+      return res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
+
+    const newUser = await User.findByPk(memberId)
+
+    if(!newUser){
+      res.statusCode = 400
+      return res.json({
+        "message": "Validation Error",
+        "statusCode": 400,
+        "errors": {
+          "memberId": "User couldn't be found"
+        }
+      })
+    }
+
+    const [membership] = group.Memberships.filter(member => member.userId === memberId)
+
+    if(!membership){
+      res.statusCode = 404
+      return res.json({
+        message: "Membership between the user and the group does not exits",
+        statusCode: 404
+      })
+    }
+
+    if(status.toLowerCase() === "pending"){
+      res.statusCode = 404
+      return res.json({
+        message: "Cannot change a membership status to pending",
+        statusCode: 404
+      })
+    }
+
+    if(!['member', 'co-host'].includes(status.toLowerCase())){
+      res.statusCode = 404
+      return res.json({
+        message: "Not a valid membership status",
+        statusCode: 404
+      })
+    }
+
+    membership.status = status
+
+    return res.json(membership)
+  });
+
 router.post(
   '/:groupId/membership',
   restoreUser,
@@ -359,9 +430,7 @@ router.post(
       return res.json({"Message": "Not logged in."})
     }
     const userId = user.id
-    const group = await Group.findByPk(groupId, {include: [{model: Membership }]})
-    const memberships = await Membership.findAll()
-    return res.json(group)
+    const group = await Group.findByPk(groupId, {include: [{model: Membership}]})
     if(!group){
       res.statusCode = 404
       return res.json({

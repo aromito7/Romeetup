@@ -19,6 +19,16 @@ module.exports = {
         status: "co-host"
       },
       {
+        userId: 3,
+        groupId: 1,
+        status: "pending"
+      },
+      {
+        userId: 4,
+        groupId: 1,
+        status: "pending"
+      },
+      {
         userId: 4,
         groupId: 2,
         status: "pending"
