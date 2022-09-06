@@ -340,8 +340,11 @@ router.post(
 router.post(
   '/',
   validateCreation,
+  restoreUser,
   async (req, res, next) => {
-    const { organizerId, name, about, type, private, city, state } = req.body
+    const { name, about, type, private, city, state } = req.body
+    const { user } = req
+    const organizerId = user.id
     const newGroup = await Group.create({ organizerId, name, about, type, private, city, state})
     return res.json({
       newGroup

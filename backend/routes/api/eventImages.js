@@ -49,7 +49,7 @@ router.delete(
     const group = event.Group
 
     const membership = await Membership.findAll({where: {userId: user.id, groupId: group.id}})
-    if(membership && (group.organizerId === user.id || membership[0].status.toLowerCase() === "co-host")){
+    if(membership[0] && (group.organizerId === user.id || membership[0].status.toLowerCase() === "co-host")){
       await eventImage.destroy()
       return res.json({
         message: "Successfully deleted"

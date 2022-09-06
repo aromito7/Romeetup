@@ -40,12 +40,80 @@ const validateEvent = [
   handleValidationErrors
 ];
 
+
+
 router.get(
   '/',
   async (req, res, next) => {
+    let {page, size, name, type, startDate} = req.query
 
-    const events = await Event.findAll({});
+    const where = {page: 1, size: 20}
+    const query = {}
+    const errors = {}
 
+    if(page){
+      if(isNaN(page) || page < 0){
+        errors.page = "Page must be a number greater than or equal to 0"
+      }else if(page <= 10){
+        where.page = Math.floor(page)
+      }else{
+        where.page = 10
+      }
+    }
+
+    if(size){
+      if(isNaN(size) || size < 0){
+        errors.size = "Size must be a number greater than or equal to 0"
+      }else if(size <= 20){
+        where.size = Math.floor(size)
+      }
+    }
+
+    query.limit = where.size
+    query.offset = (where.page - 1) * where.size
+    query.include = [
+      {model: Group, attributes: ["id", "name", "city", "state"]},
+      {model: Venue, attributes: ["id", "city", "state"]},
+      {model: EventImage, limit: 1, attributes: ["url"], where: {preview: true}}]
+
+    if(name){
+      if(isNaN(name)){
+        where.name = name
+      }else{
+        errors.name = "Name must be a string"
+      }
+    }
+
+    if(type){
+      if(type.match(/^(online|in person)$/i)){
+        where.type = type.match(/^online$/i) ? "Online" : "In Person"
+      }else{
+        errors.type = "Type must be 'Online' or 'In Person'"
+      }
+    }
+
+    if(startDate){
+      if(isNaN(new Date(startDate))){
+        errors.startDate = "Start date must be a valid datetime"
+      }else{
+        where.startDate = startDate
+      }
+    }
+
+    query.where = where
+    delete where.page;
+    delete where.size;
+
+
+    if(Object.keys(errors).length > 0){
+      res.statusCode = 400
+      return res.json({
+        message: "Validation Error",
+        statusCode: 400,
+        errors
+      })
+    }
+    const events = await Event.findAll(query);
     return res.json({
       events
     });
