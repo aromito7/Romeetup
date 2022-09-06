@@ -191,7 +191,7 @@ router.delete(
     const { user } = req
     const {userId} = req.body
 
-    const event = await Event.findByPk(eventId, {include: [Attendance, {model: Group, include: {model: Membership}}]})
+    const event = await Event.findByPk(eventId, {include: [Attendance, Group]})
     if(!event){
       res.statusCode = 404
       return res.json({
@@ -199,11 +199,11 @@ router.delete(
         "statusCode": 404
       })
     }
-    const group = await Group.findByPk(event.Group.id, {include: Membership})
-    const [attendance] = event.Attendances.filter(att => att.userId === userId)
-    const [membership] = event.Group.Memberships.filter(mem => mem.userId = user.id)
 
-    if(!attendance){
+    const group = await Group.findByPk(event.Group.id, {include: Membership})
+    //const [attendance] = event.Attendances.filter(att => att.userId === userId)
+    const attendance = await Attendance.findAll({where: {eventId: event.id, userId}})
+    if(attendance.length < 1){
       res.statusCode = 404
       res.json({
         "message": "Attendance between the user and the event does not exist",
@@ -211,9 +211,18 @@ router.delete(
       })
     }
 
-    if(membership && (event.Group.organizerId === user.id || membership.status.toLowerCase() === "co-host")){
+    const membership = await Membership.findAll({where: {userId: user.id, groupId: group.id}})
+    if(membership && (event.Group.organizerId === user.id || membership[0].status.toLowerCase() === "co-host")){
+      await attendance[0].destroy()
+      return res.json({
+        message: "Successfully deleted attendance from event"
+      })
     }
-    return res.json(attendance)
+    res.statusCode = 403
+    return res.json({
+      message: "You don't have permission to delete attendees",
+      statusCode: 403
+    })
   }
 )
 
