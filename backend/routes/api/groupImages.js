@@ -1,7 +1,7 @@
 // backend/routes/api/session.js
 const express = require('express');
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { GroupImage } = require('../../db/models');
+const { GroupImage, Group, Membership } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -29,5 +29,37 @@ router.get(
     });
   });
 
+router.delete(
+  '/:imageId',
+  restoreUser,
+  async (req, res, next) => {
+    const { imageId } = req.params
+    const { user } = req
 
-  module.exports = router;
+    const groupImage = await GroupImage.findByPk(imageId, {include: Group})
+    if(!groupImage){
+      res.statusCode = 404
+      return res.json({
+        "message": "Group Image couldn't be found",
+        "statusCode": 404
+      })
+    }
+
+    const group = await Group.findByPk(groupImage.Group.id, {include: Membership})
+
+    const membership = await Membership.findAll({where: {userId: user.id, groupId: group.id}})
+    if(membership && (groupImage.Group.organizerId === user.id || membership[0].status.toLowerCase() === "co-host")){
+      await groupImage.destroy()
+      return res.json({
+        message: "Successfully deleted"
+      })
+    }
+    res.statusCode = 403
+    return res.json({
+      message: "You don't have permission to delete images",
+      statusCode: 403
+    })
+  }
+)
+
+module.exports = router;
