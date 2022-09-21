@@ -1,4 +1,4 @@
-# Meetup Clone
+  # Meetup Clone
 
 ## Database Schema Design
 
@@ -623,7 +623,7 @@ Returns all venues for a group specified by its id
       }
     ]
   }
-  
+
   ```
 
 * Error response: Couldn't find a Group with the specified id
