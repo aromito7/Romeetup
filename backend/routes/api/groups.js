@@ -88,10 +88,21 @@ const validateEvent = [
   handleValidationErrors
 ];
 
+const authRequired = (res) => {
+  res.statusCode = 401
+  res.message = "Authentication required"
+  return res.json({
+    statusCode: 401,
+    message: "Authentication required"
+  })
+}
+
 router.get(
   '/',
   async (req, res) => {
     const groups = await Group.findAll({});
+
+
     return res.json({
       groups
     });
