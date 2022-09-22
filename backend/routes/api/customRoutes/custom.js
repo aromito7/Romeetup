@@ -72,12 +72,17 @@ router.post(
 
         params = params.join(",")
 
-        let command = "npx sequelize model:generate --name " + name + " --attributes " + params
+        let command = "npx sequelize model:generate --name " + name[0].toUpperCase() + name.slice(1) + " --attributes " + params
 
-        execSync(command);
-
+        try{
+            result = execSync(command, { encoding: 'utf-8'});
+            execSync("npx dotenv sequelize db:migrate")
+        }catch{
+            result = "Migration and Model with that name already exist."
+        }
         return res.json({
-            message: `${name} migration and model successfully created`
+            message: `${name} migration and model successfully created`,
+            result
         })
     }
   );
