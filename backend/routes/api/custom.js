@@ -87,4 +87,11 @@ router.post(
     }
   );
 
+router.delete(
+  '/delete/:name',
+  async(req, res) => {
+    
+  }
+);
+
 module.exports = router;
