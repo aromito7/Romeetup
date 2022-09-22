@@ -9,7 +9,7 @@ const eventImagesRouter = require('./eventImages.js')
 const attendeesRouter = require('./attendees.js')
 const membershipsRouter = require('./memberships.js')
 const groupImagesRouter = require('./groupImages.js')
-const customRouter = require('./custom.js')
+const customRouter = require('./customRoutes/custom.js')
 
 const { restoreUser } = require("../../utils/auth.js");
 
