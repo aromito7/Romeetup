@@ -103,9 +103,7 @@ router.get(
   async (req, res) => {
     const groups = await Group.findAll({});
 
-    return res.json({
-      groups
-    });
+    return res.json(groups);
   }
 );
 
@@ -119,9 +117,7 @@ router.get(
           organizerId: user.toSafeObject().id
         }
       });
-      return res.json({
-        groups
-      });
+      return res.json(groups);
     }else{
       return res.json({"Message": "Not logged in."})
     }
@@ -134,9 +130,7 @@ router.get(
     const { groupId } = req.params;
     const groups = await Group.findByPk(groupId)
     if(groups){
-      return res.json({
-        groups
-      });
+      return res.json(groups);
     }else{
       res.statusCode = 404
       return res.json({
@@ -206,6 +200,8 @@ router.post(
   async (req, res, next) => {
     const { groupId } = req.params;
     const { url, preview } = req.body;
+
+    // return res.json({groupId, url, preview})
     const group = await Group.findByPk(groupId);
     if(group){
       group.previewImage = url
@@ -245,7 +241,7 @@ router.post(
       });
 
       return res.json({
-        id: venue.id,
+        id: newVenue.id,
         groupId,
         address,
         city,
@@ -288,7 +284,7 @@ router.get(
   async (req, res, next) => {
     const { groupId } = req.params
     const events = await Event.findAll({where: {groupId}})
-    if(events){
+    if(events.length){
       return res.json({
         Events: events
       });
@@ -296,7 +292,8 @@ router.get(
       res.statusCode = 404
       return res.json({
         message: "Group couldn't be found",
-        statusCode: 404
+        statusCode: 404,
+        groupId
       })
     }
   }
@@ -304,7 +301,7 @@ router.get(
 
 router.post(
   '/:groupId/events',
-  validateEvent,
+  validateEvent,            //For postman test to create event by invalid groupId is it ok if validator checks for errors before my code checks URL params?
   restoreUser,
   async (req, res, next) => {
     const { user } = req;
@@ -342,9 +339,7 @@ router.post(
       endDate
     });
 
-    return res.json({
-      newEvent
-    });
+    return res.json(newEvent);
   }
 );
 
@@ -357,9 +352,7 @@ router.post(
     const { user } = req
     const organizerId = user.id
     const newGroup = await Group.create({ organizerId, name, about, type, private, city, state})
-    return res.json({
-      newGroup
-    });
+    return res.json(newGroup);
   }
 );
 
