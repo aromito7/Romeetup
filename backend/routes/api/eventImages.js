@@ -1,6 +1,6 @@
 // backend/routes/api/session.js
 const express = require('express');
-const { setTokenCookie, restoreUser } = require('../../utils/auth');
+const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 const { EventImage, Group, Membership, Event } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');

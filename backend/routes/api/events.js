@@ -1,6 +1,6 @@
 // backend/routes/api/session.js
 const express = require('express');
-const { setTokenCookie, restoreUser } = require('../../utils/auth');
+const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 const { Event, EventImage, Venue, Group, Membership, Attendance, User } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');
@@ -141,6 +141,7 @@ router.get(
 router.put(
   '/:eventId',
   validateEvent,
+  requireAuth,
   async (req, res) => {
     const {eventId} = req.params
     const {venueId} = req.body
@@ -179,9 +180,9 @@ router.post(
   '/:eventId/images',
   restoreUser,
   async (req, res) => {
-    const { user } = req;
-    if (!user) {
-      return res.json({"Message": "Not logged in."})
+    const { user } = req
+    if(!user){
+      return authRequired(res)
     }
 
     const {eventId} = req.params;
@@ -214,16 +215,11 @@ router.post(
 router.delete(
   '/:eventId',
   restoreUser,
+  requireAuth,
   async (req, res, next) => {
     const { user } = req;
     const { eventId } = req.params;
-    if(!user){
-      res.statusCode = 404
-      return res.json({
-        "Message": "Not logged in.",
-        statusCode: 404
-      })
-    }
+
     const event = await Event.findByPk(eventId, {include: {model: Group, include: Membership}});
 
     if(!event){

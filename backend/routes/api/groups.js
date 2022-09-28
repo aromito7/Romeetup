@@ -93,8 +93,8 @@ const authRequired = (res) => {
   res.statusCode = 401
   res.message = "Authentication required"
   return res.json({
-    statusCode: 401,
-    message: "Authentication required"
+    message: "Authentication required",
+    statusCode: 401
   })
 }
 
@@ -109,8 +109,9 @@ router.get(
 
 router.get(
   '/current',
+  requireAuth,
   async (req, res, next) => {
-    const { user } = req;
+
     if (user) {
       const groups = await Group.findAll({
         where: {
@@ -144,11 +145,11 @@ router.get(
 router.put(
   '/:groupId',
   validateCreation,
+  requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params;
     const { name, about, type, private, city, state } = req.body
     const fields = {name, about, type, private, city, state}
-
     const group = await Group.findByPk(groupId);
 
     if(group){
@@ -172,9 +173,9 @@ router.put(
 
 router.delete(
   '/:groupId',
+  requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params;
-
     const group = await Group.findByPk(groupId);
 
     if(group){
@@ -197,10 +198,10 @@ router.delete(
 
 router.post(
   '/:groupId/images',
+  requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params;
     const { url, preview } = req.body;
-
     // return res.json({groupId, url, preview})
     const group = await Group.findByPk(groupId);
     if(group){
@@ -226,8 +227,10 @@ router.post(
 router.post(
   '/:groupId/venues',
   validateVenue,
+  requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params
+    const { user } = req
     const group = await Group.findByPk(groupId)
     if(group){
       const { address, city, state, lat, lng } = req.body
@@ -262,8 +265,10 @@ router.post(
 
 router.get(
   '/:groupId/venues',
+  requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params
+    const { user } = req
     const venue = await Venue.findByPk(groupId)
     if(venue){
       return res.json({
@@ -301,14 +306,11 @@ router.get(
 
 router.post(
   '/:groupId/events',
+  requireAuth,
   validateEvent,            //For postman test to create event by invalid groupId is it ok if validator checks for errors before my code checks URL params?
-  restoreUser,
   async (req, res, next) => {
     const { user } = req;
     const { groupId } = req.params
-    if (!user) {
-      return res.json({"Message": "Not logged in."})
-    }
     const group = await Group.findByPk(groupId)
     if(!group){
       res.statusCode = 404
@@ -343,10 +345,12 @@ router.post(
   }
 );
 
+
 router.post(
   '/',
   validateCreation,
   restoreUser,
+  requireAuth,
   async (req, res, next) => {
     const { name, about, type, private, city, state } = req.body
     const { user } = req
@@ -356,16 +360,86 @@ router.post(
   }
 );
 
-router.put(
+router.delete(
   '/:groupId/membership',
   restoreUser,
+  requireAuth,
   async (req, res, next) => {
     const {groupId} = req.params
     const { user } = req;
     const { memberId, status } = req.body
-    if (!user) {
-      return res.json({"Message": "Not logged in."})
+
+    const group = await Group.findByPk(groupId, {include: [{model: Membership }]})
+
+    if(group.organizerId !== user.id){
+      res.statusCode = 403
+      return res.json({
+        message: "You must be an organizer or co-host to delete events.",
+        statusCode: 403
+      })
     }
+    if(!group){
+      res.statusCode = 404
+      return res.json({
+        message: "Group couldn't be found",
+        statusCode: 404
+      })
+    }
+
+    const newUser = await User.findByPk(memberId)
+
+    if(!newUser){
+      res.statusCode = 400
+      return res.json({
+        "message": "Validation Error",
+        "statusCode": 400,
+        "errors": {
+          "memberId": "User couldn't be found"
+        }
+      })
+    }
+
+    const [membership] = group.Memberships.filter(member => member.userId === memberId)
+
+    if(!membership){
+      res.statusCode = 404
+      return res.json({
+        message: "Membership between the user and the group does not exits",
+        statusCode: 404
+      })
+    }
+
+    if(status.toLowerCase() === "pending"){
+      res.statusCode = 404
+      return res.json({
+        message: "Cannot change a membership status to pending",
+        statusCode: 404
+      })
+    }
+
+    if(!['member', 'co-host'].includes(status.toLowerCase())){
+      res.statusCode = 404
+      return res.json({
+        message: "Not a valid membership status",
+        statusCode: 404
+      })
+    }
+
+    return res.json({
+      message: "Successfully deleted membership from group"
+    })
+  });
+
+
+router.put(
+  '/:groupId/membership',
+  restoreUser,
+  requireAuth,
+  async (req, res, next) => {
+    const {groupId} = req.params
+    const { user } = req;
+    const { memberId, status } = req.body
+
     const group = await Group.findByPk(groupId, {include: [{model: Membership }]})
 
     if(group.organizerId !== user.id){
@@ -430,12 +504,10 @@ router.put(
 router.post(
   '/:groupId/membership',
   restoreUser,
+  requireAuth,
   async (req, res, next) => {
     const {groupId} = req.params
     const { user } = req;
-    if (!user) {
-      return res.json({"Message": "Not logged in."})
-    }
     const userId = user.id
     const group = await Group.findByPk(groupId, {include: [{model: Membership}]})
     if(!group){

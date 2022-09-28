@@ -1,6 +1,6 @@
 // backend/routes/api/session.js
 const express = require('express');
-const { setTokenCookie, restoreUser } = require('../../utils/auth');
+const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 const { User, Venue } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');
@@ -27,11 +27,13 @@ const validateVenue = [
 
 router.put(
   '/:venueId',
+  requireAuth,
   validateVenue,
   async (req, res, next) => {
     const { venueId } = req.params
     const { address, city, state, lat, lgn } = req.body
     const fields = { address, city, state, lat, lgn }
+    const { user } = req
     const venue = await Venue.findByPk(venueId);
 
     if(venue){
