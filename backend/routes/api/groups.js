@@ -2,7 +2,7 @@
 const express = require('express');
 
 const { setTokenCookie, requireAuth, restoreUser, isAuthorized, notAuthorized, groupNotFound } = require('../../utils/auth');
-const { Group, Venue, Event, Membership, User, GroupImage } = require('../../db/models');
+const { Group, Venue, Event, Membership, User, GroupImage, Attendance} = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const venue = require('../../db/models/venue');
@@ -309,7 +309,6 @@ router.post(
     if(!group){
       return groupNotFound(res)
     }
-
     const memberships = await Membership.findAll({where: {groupId}})
     if(!isAuthorized(user, group, memberships)){
       return notAuthorized(res)
@@ -418,6 +417,11 @@ router.post(
       endDate
     });
     const {id} = newEvent
+    await Attendance.create({
+      eventId: id,
+      userId: user.id,
+      status: "attending"
+    })
     return res.json({
       id,
       groupId,

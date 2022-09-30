@@ -46,9 +46,12 @@ router.delete(
       })
     }
 
-    const group = await Group.findByPk(groupImage.Group.id, {include: Membership})
-    const membership = await Membership.findAll({where: {userId: user.id, groupId: group.id}})
-    if(membership[0] && (groupImage.Group.organizerId === user.id || membership[0].status.toLowerCase() === "co-host")){
+    const group = groupImage.Group//await Group.findByPk(groupImage.Group.id, {include: Membership})
+    const groupId = group.id
+    const memberships = await Membership.findAll({where: {groupId}})
+    //const membership = await Membership.findAll()//{where: {userId: user.id, groupId: group.id}})
+
+    if(isAuthorized(user, group, memberships)){//membership[0] && (groupImage.Group.organizerId === user.id || membership[0].status.toLowerCase() === "co-host")){
       await groupImage.destroy()
       return res.json({
         message: "Successfully deleted"

@@ -1,6 +1,6 @@
 // backend/routes/api/session.js
 const express = require('express');
-const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
+const { setTokenCookie, restoreUser, requireAuth, isAuthorized, notAuthorized, groupNotFound } = require('../../utils/auth');
 const { User, Venue, Group, Membership } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');
@@ -25,44 +25,44 @@ const validateVenue = [
   handleValidationErrors
 ];
 
-const isAuthorized = (currentUser, group, memberships) => {
-  console.log([
-    {currentUser: currentUser},
-    group,
-    memberships
-  ])
-  if(memberships){  //Needs to be tested on code with memberships
-    const currentUserMemberships = memberships.filter( m => m.userId === currentUser.id)
-    console.log(memberships, currentUserMemberships)
-    if(currentUserMemberships[0].status.match(/^co-host$/i)){
-      return true
-    }
-  }
+// const isAuthorized = (currentUser, group, memberships) => {
+//   console.log([
+//     {currentUser: currentUser},
+//     group,
+//     memberships
+//   ])
+//   if(memberships){  //Needs to be tested on code with memberships
+//     const currentUserMemberships = memberships.filter( m => m.userId === currentUser.id)
+//     console.log(memberships, currentUserMemberships)
+//     if(currentUserMemberships[0].status.match(/^co-host$/i)){
+//       return true
+//     }
+//   }
 
-  if(currentUser.id === group.organizerId){
-    return true
-  }
+//   if(currentUser.id === group.organizerId){
+//     return true
+//   }
 
-  return false
-}
+//   return false
+// }
 
-const notAuthorized = res => {
-  res.statusCode = 403
-  res.message = "Forbidden"
-  return res.json({
-    message: "Forbidden",
-    statusCode: 403
-  })
-}
+// const notAuthorized = res => {
+//   res.statusCode = 403
+//   res.message = "Forbidden"
+//   return res.json({
+//     message: "Forbidden",
+//     statusCode: 403
+//   })
+// }
 
-const groupNotFound = res => {
-  res.statusCode = 404
-  res.message = "Group couldn't be found"
-  return res.json({
-    message: "Group couldn't be found",
-    statusCode: 404
-  })
-}
+// const groupNotFound = res => {
+//   res.statusCode = 404
+//   res.message = "Group couldn't be found"
+//   return res.json({
+//     message: "Group couldn't be found",
+//     statusCode: 404
+//   })
+// }
 
 router.put(
   '/:venueId',
@@ -76,9 +76,6 @@ router.put(
     const {user} = req
 
     const venue = await Venue.findByPk(venueId);
-    const {groupId} = venue
-    const group = await Group.findByPk(groupId);
-    const memberships = await Membership.findAll({where: {groupId}})
 
     if(!venue){
       res.statusCode = 404
@@ -87,6 +84,9 @@ router.put(
         statusCode: 404
       })
     }
+    const {groupId} = venue
+    const group = await Group.findByPk(groupId);
+    const memberships = await Membership.findAll({where: {groupId}})
     if(!isAuthorized(user, group, memberships)){
       return notAuthorized(res)
     }

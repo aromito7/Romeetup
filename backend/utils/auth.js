@@ -68,10 +68,11 @@ const setTokenCookie = (res, user) => {
     //   group,
     //   memberships
     // ])
-    if(memberships){  //Needs to be tested on code with memberships
-      const currentUserMemberships = memberships.filter( m => m.userId === currentUser.id)
+    console.log(currentUser.id, group.organizerId)
+    if(memberships && memberships.length > 0){  //Needs to be tested on code with memberships
+    const [currentUserMemberships] = memberships.filter( m => m.userId === currentUser.id)
       //console.log(memberships, currentUserMemberships)
-      if(currentUserMemberships[0].status.match(/^co-host$/i)){
+      if(currentUserMemberships && currentUserMemberships.status.match(/^co-host$/i)){
         return true
       }
     }
@@ -120,13 +121,14 @@ const setTokenCookie = (res, user) => {
   }
 
   const isAttendee = (currentUser, attendees) => {
-    console.log([
-      {currentUser: currentUser},
-      attendees
-    ])
-    if(attendees){  //Needs to be tested on code with memberships
+    // console.log([
+    //   {currentUser: currentUser},
+    //   attendees
+    // ])
+
+    if(attendees && attendees.length > 0){  //Needs to be tested on code with memberships
       const currentUserMemberships = attendees.filter( m => m.userId === currentUser.id)
-      //console.log(attendees, currentUserMemberships)
+
       if(currentUserMemberships.length > 0){
         return true
       }
