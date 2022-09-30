@@ -33,10 +33,14 @@ router.post(
         return next(err);
       }
 
-      await setTokenCookie(res, user);
-
+      const token = await setTokenCookie(res, user);
+      const {id, firstName, lastName, email} = user
       return res.json({
-        user
+        id,
+        firstName,
+        lastName,
+        email,
+        token
       });
     }
   );
@@ -62,26 +66,26 @@ router.post(
   );
 
 
-  router.post(
-    '/',
-    validateLogin,
-    async (req, res, next) => {
-      const { credential, password } = req.body;
+  // router.post(
+  //   '/',
+  //   validateLogin,
+  //   async (req, res, next) => {
+  //     const { credential, password } = req.body;
 
-      const user = await User.login({ credential, password });
+  //     const user = await User.login({ credential, password });
 
-      if (!user) {
-        const err = new Error('Login failed');
-        err.status = 401;
-        err.title = 'Login failed';
-        err.errors = ['The provided credentials were invalid.'];
-        return next(err);
-      }
+  //     if (!user) {
+  //       const err = new Error('Login failed');
+  //       err.status = 401;
+  //       err.title = 'Login failed';
+  //       err.errors = ['The provided credentials were invalid.'];
+  //       return next(err);
+  //     }
 
-      await setTokenCookie(res, user);
+  //     await setTokenCookie(res, user);
 
-      return res.json(user);
-    }
-  );
+  //     return res.json(user);
+  //   }
+  // );
 
   module.exports = router;

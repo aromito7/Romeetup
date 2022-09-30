@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate:{
-        is: /^(member|waitlist|pending)$/i
+        is: /^(member|attending|waitlist|pending)$/i
       }
     },
   }, {

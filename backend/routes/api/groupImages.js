@@ -1,6 +1,6 @@
 // backend/routes/api/session.js
 const express = require('express');
-const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
+const { setTokenCookie, restoreUser, requireAuth, isAuthorized, notAuthorized } = require('../../utils/auth');
 const { GroupImage, Group, Membership } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');
@@ -47,7 +47,6 @@ router.delete(
     }
 
     const group = await Group.findByPk(groupImage.Group.id, {include: Membership})
-
     const membership = await Membership.findAll({where: {userId: user.id, groupId: group.id}})
     if(membership[0] && (groupImage.Group.organizerId === user.id || membership[0].status.toLowerCase() === "co-host")){
       await groupImage.destroy()
@@ -55,11 +54,7 @@ router.delete(
         message: "Successfully deleted"
       })
     }
-    res.statusCode = 403
-    return res.json({
-      message: "You don't have permission to delete images",
-      statusCode: 403
-    })
+    return notAuthorized(res)
   }
 )
 

@@ -1,7 +1,7 @@
 // backend/routes/api/users.js
 const express = require('express');
 
-const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
+const { setTokenCookie, requireAuth, restoreUser, isAuthorized, notAuthorized, groupNotFound } = require('../../utils/auth');
 const { Group, Venue, Event, Membership, User, GroupImage } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -90,44 +90,44 @@ const validateEvent = [
   handleValidationErrors
 ];
 
-const isAuthorized = (currentUser, group, memberships) => {
-  console.log([
-    {currentUser: currentUser},
-    group,
-    memberships
-  ])
-  if(memberships){  //Needs to be tested on code with memberships
-    const currentUserMemberships = memberships.filter( m => m.userId === currentUser.id)
-    console.log(memberships, currentUserMemberships)
-    if(currentUserMemberships[0].status.match(/^co-host$/i)){
-      return true
-    }
-  }
+// const isAuthorized = (currentUser, group, memberships) => {
+//   // console.log([
+//   //   {currentUser: currentUser},
+//   //   group,
+//   //   memberships
+//   // ])
+//   if(memberships){  //Needs to be tested on code with memberships
+//     const currentUserMemberships = memberships.filter( m => m.userId === currentUser.id)
+//     console.log(memberships, currentUserMemberships)
+//     if(currentUserMemberships[0].status.match(/^co-host$/i)){
+//       return true
+//     }
+//   }
 
-  if(currentUser.id === group.organizerId){
-    return true
-  }
+//   if(currentUser.id === group.organizerId){
+//     return true
+//   }
 
-  return false
-}
+//   return false
+// }
 
-const notAuthorized = res => {
-  res.statusCode = 403
-  res.message = "Forbidden"
-  return res.json({
-    message: "Forbidden",
-    statusCode: 403
-  })
-}
+// const notAuthorized = res => {
+//   res.statusCode = 403
+//   res.message = "Forbidden"
+//   return res.json({
+//     message: "Forbidden",
+//     statusCode: 403
+//   })
+// }
 
-const groupNotFound = res => {
-  res.statusCode = 404
-  res.message = "Group couldn't be found"
-  return res.json({
-    message: "Group couldn't be found",
-    statusCode: 404
-  })
-}
+// const groupNotFound = res => {
+//   res.statusCode = 404
+//   res.message = "Group couldn't be found"
+//   return res.json({
+//     message: "Group couldn't be found",
+//     statusCode: 404
+//   })
+// }
 
 router.get(
   '/',
@@ -395,21 +395,16 @@ router.post(
     const { groupId } = req.params
     const group = await Group.findByPk(groupId)
     if(!group){
-      res.statusCode = 404
-      return res.json({
-        message: "Couldn't find group",
-        statusCode: 404
-      })
+      return groupNotFound(res)
     }
 
+    const memberships = await Membership.findAll({where: {groupId}})
+
     //Need to add permission for co-host once memberships have been created.
-    if(group.organizerId !== user.toSafeObject().id){
-      res.statusCode = 403
-      return res.json({
-        message: "You must be an organizer or co-host to create events.",
-        statusCode: 403
-      })
+    if(!isAuthorized(user, group, memberships)){
+      return notAuthorized(res)
     }
+
     const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body
     const newEvent = await Event.create({
       groupId,
@@ -422,8 +417,19 @@ router.post(
       startDate,
       endDate
     });
-
-    return res.json(newEvent);
+    const {id} = newEvent
+    return res.json({
+      id,
+      groupId,
+      venueId,
+      name,
+      type,
+      capacity,
+      price,
+      description,
+      startDate,
+      endDate
+    });
   }
 );
 
@@ -467,19 +473,11 @@ router.delete(
 
     const group = await Group.findByPk(groupId, {include: [{model: Membership }]})
 
-    if(group.organizerId !== user.id){
-      res.statusCode = 403
-      return res.json({
-        message: "You must be an organizer or co-host to delete events.",
-        statusCode: 403
-      })
-    }
     if(!group){
-      res.statusCode = 404
-      return res.json({
-        message: "Group couldn't be found",
-        statusCode: 404
-      })
+      return groupNotFound(res)
+    }
+    if(!(group.organizerId === user.id || memberId === user.id)){
+      return notAuthorized(res)
     }
 
     const newUser = await User.findByPk(memberId)
@@ -505,21 +503,7 @@ router.delete(
       })
     }
 
-    if(status.toLowerCase() === "pending"){
-      res.statusCode = 404
-      return res.json({
-        message: "Cannot change a membership status to pending",
-        statusCode: 404
-      })
-    }
-
-    if(!['member', 'co-host'].includes(status.toLowerCase())){
-      res.statusCode = 404
-      return res.json({
-        message: "Not a valid membership status",
-        statusCode: 404
-      })
-    }
+    membership.destroy()
 
     return res.json({
       message: "Successfully deleted membership from group"
@@ -536,26 +520,9 @@ router.put(
     const { user } = req;
     const { memberId, status } = req.body
 
-    const group = await Group.findByPk(groupId, {include: [{model: Membership }]})
+    const member = await User.findByPk(memberId)
 
-    if(!group){
-      res.statusCode = 404
-      return res.json({
-        message: "Group couldn't be found",
-        statusCode: 404
-      })
-    }
-    const [currentUser] = group.Memberships.filter(member => user.id === member.userId)
-    if(!currentUser.status.match(/co-host/i)){
-      res.statusCode = 403
-      return res.json({
-        message: "You must be an organizer or co-host to create events.",
-        statusCode: 403
-      })
-    }
-    const newUser = await User.findByPk(memberId)
-
-    if(!newUser){
+    if(!member){
       res.statusCode = 400
       return res.json({
         "message": "Validation Error",
@@ -565,6 +532,17 @@ router.put(
         }
       })
     }
+
+    const group = await Group.findByPk(groupId, {include: [{model: Membership }]})
+
+    if(!group){
+      return groupNotFound(res)
+    }
+
+    if(!isAuthorized(user, group, group.Memberships)){
+      return notAuthorized(res)
+    }
+
 
     const [membership] = group.Memberships.filter(member => member.userId === memberId)
     //return res.json([membership, group.Memberships])
@@ -584,11 +562,19 @@ router.put(
       })
     }
 
-    if(!['member', 'co-host'].includes(status.toLowerCase())){
+    if(!status.match(/^(member|co-host)$/i)){//!['member', 'co-host'].includes(status.toLowerCase())){
       res.statusCode = 404
       return res.json({
         message: "Not a valid membership status",
         statusCode: 404
+      })
+    }
+
+    if(status.toLowerCase() === "co-host" && group.organizerId !== user.id){
+      res.statusCode = 403
+      return res.json({
+        message: "Only the organizer can promote to co-host",
+        statusCode: 403
       })
     }
 
@@ -608,11 +594,7 @@ router.post(
     const userId = user.id
     const group = await Group.findByPk(groupId, {include: [{model: Membership}]})
     if(!group){
-      res.statusCode = 404
-      return res.json({
-        message: "Group couldn't be found",
-        statusCode: 404
-      })
+      return groupNotFound(res)
     }
     const member = group.Memberships.filter( m => m.userId === user.id)
     if(member.length > 0){

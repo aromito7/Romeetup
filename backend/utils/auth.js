@@ -62,5 +62,78 @@ const setTokenCookie = (res, user) => {
     return next(err);
   }
 
+  const isAuthorized = (currentUser, group, memberships) => {
+    // console.log([
+    //   {currentUser: currentUser},
+    //   group,
+    //   memberships
+    // ])
+    if(memberships){  //Needs to be tested on code with memberships
+      const currentUserMemberships = memberships.filter( m => m.userId === currentUser.id)
+      //console.log(memberships, currentUserMemberships)
+      if(currentUserMemberships[0].status.match(/^co-host$/i)){
+        return true
+      }
+    }
 
-  module.exports = { setTokenCookie, restoreUser, requireAuth };
+    if(currentUser.id === group.organizerId){
+      return true
+    }
+
+    return false
+  }
+
+  const notAuthorized = res => {
+    res.statusCode = 403
+    res.message = "Forbidden"
+    return res.json({
+      message: "Forbidden",
+      statusCode: 403
+    })
+  }
+
+  const groupNotFound = res => {
+    res.statusCode = 404
+    res.message = "Group couldn't be found"
+    return res.json({
+      message: "Group couldn't be found",
+      statusCode: 404
+    })
+  }
+
+  const eventNotFound = res => {
+    res.message = "Event couldn't be found"
+    res.statusCode = 404
+    return res.json({
+      message: "Event couldn't be found",
+      statusCode: 404
+    })
+  }
+
+  const venueNotFound = res => {
+    res.message = "Venue couldn't be found"
+    res.statusCode = 404
+    return res.json({
+      message: "Venue couldn't be found",
+      statusCode: 404
+    })
+  }
+
+  const isAttendee = (currentUser, attendees) => {
+    console.log([
+      {currentUser: currentUser},
+      attendees
+    ])
+    if(attendees){  //Needs to be tested on code with memberships
+      const currentUserMemberships = attendees.filter( m => m.userId === currentUser.id)
+      //console.log(attendees, currentUserMemberships)
+      if(currentUserMemberships.length > 0){
+        return true
+      }
+    }
+
+    return false
+  }
+
+
+  module.exports = { setTokenCookie, restoreUser, requireAuth, isAuthorized, notAuthorized, groupNotFound, isAttendee, eventNotFound, venueNotFound };
