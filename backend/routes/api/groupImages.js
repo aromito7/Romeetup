@@ -32,6 +32,7 @@ router.get(
 router.delete(
   '/:imageId',
   restoreUser,
+  requireAuth,
   async (req, res, next) => {
     const { imageId } = req.params
     const { user } = req

@@ -114,9 +114,7 @@ router.get(
       })
     }
     const events = await Event.findAll(query);
-    return res.json({
-      events
-    });
+    return res.json(events);
   });
 
 router.get(
@@ -125,9 +123,7 @@ router.get(
     const { eventId } = req.params;
     const event = await Event.findByPk(eventId, {include: ["Venue", "Group", "EventImages"]})
     if(event){
-      return res.json({
-        event
-      });
+      return res.json(event);
     }else{
       res.statusCode = 404
       return res.json({
@@ -141,6 +137,7 @@ router.get(
 router.put(
   '/:eventId',
   validateEvent,
+  restoreUser,
   requireAuth,
   async (req, res) => {
     const {eventId} = req.params
@@ -250,6 +247,7 @@ router.delete(
 router.delete(
   '/:eventId/attendance',
   restoreUser,
+  requireAuth,
   async (req, res, next) => {
     const { eventId } = req.params
     const { user } = req
@@ -293,6 +291,7 @@ router.delete(
 router.put(
   '/:eventId/attendance',
   restoreUser,
+  requireAuth,
   async (req, res, next) => {
     const { eventId } = req.params
     const { user } = req
@@ -349,6 +348,7 @@ router.put(
 router.post(
   '/:eventId/attendance',
   restoreUser,
+  requireAuth,
   async (req, res, next) => {
     const { eventId } = req.params
     const { user } = req

@@ -50,7 +50,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Group',
-
   });
   return Group;
 };

@@ -2,12 +2,13 @@
 const express = require('express');
 
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
-const { Group, Venue, Event, Membership, User } = require('../../db/models');
+const { Group, Venue, Event, Membership, User, GroupImage } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const venue = require('../../db/models/venue');
 const { Op } = require('sequelize');
-const { execSync } = require('child_process')
+const { execSync } = require('child_process');
+const user = require('../../db/models/user');
 
 const router = express.Router();
 
@@ -89,12 +90,42 @@ const validateEvent = [
   handleValidationErrors
 ];
 
-const authRequired = (res) => {
-  res.statusCode = 401
-  res.message = "Authentication required"
+const isAuthorized = (currentUser, group, memberships) => {
+  console.log([
+    {currentUser: currentUser},
+    group,
+    memberships
+  ])
+  if(memberships){  //Needs to be tested on code with memberships
+    const currentUserMemberships = memberships.filter( m => m.userId === currentUser.id)
+    console.log(memberships, currentUserMemberships)
+    if(currentUserMemberships[0].status.match(/^co-host$/i)){
+      return true
+    }
+  }
+
+  if(currentUser.id === group.organizerId){
+    return true
+  }
+
+  return false
+}
+
+const notAuthorized = res => {
+  res.statusCode = 403
+  res.message = "Forbidden"
   return res.json({
-    message: "Authentication required",
-    statusCode: 401
+    message: "Forbidden",
+    statusCode: 403
+  })
+}
+
+const groupNotFound = res => {
+  res.statusCode = 404
+  res.message = "Group couldn't be found"
+  return res.json({
+    message: "Group couldn't be found",
+    statusCode: 404
   })
 }
 
@@ -109,9 +140,10 @@ router.get(
 
 router.get(
   '/current',
+  restoreUser,
   requireAuth,
   async (req, res, next) => {
-
+  const { user } = req
     if (user) {
       const groups = await Group.findAll({
         where: {
@@ -145,21 +177,40 @@ router.get(
 router.put(
   '/:groupId',
   validateCreation,
+  restoreUser,
   requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params;
     const { name, about, type, private, city, state } = req.body
     const fields = {name, about, type, private, city, state}
+    const { user } = req
     const group = await Group.findByPk(groupId);
 
     if(group){
-      for(i in fields){
-        if(fields[i] !== undefined)
-          group[i] = fields[i]
-      }
+      if(isAuthorized(user, group)){
+        for(i in fields){
+          if(fields[i] !== undefined)
+            group[i] = fields[i]
+        }
 
-      group.save()
-      res.json({group})
+        group.save()
+        const{ id, organizerId, name, about, type, private, city, state, createdAt, updatedAt } = group
+        return res.json({
+          id,
+          organizerId,
+          name,
+          about,
+          type,
+          private,
+          city,
+          state,
+          createdAt,
+          updatedAt
+        })
+      }
+      else{
+        return notAuthorized(res)
+      }
     }
     else{
       res.statusCode = 404
@@ -173,18 +224,23 @@ router.put(
 
 router.delete(
   '/:groupId',
+  restoreUser,
   requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params;
     const group = await Group.findByPk(groupId);
-
+    const { user } = req
     if(group){
-
-      group.destroy()
-      res.json({
-        message: "Successfully deleted",
-        statusCode: 200
-      })
+      if(isAuthorized(user, group)){
+        group.destroy()
+        res.json({
+          message: "Successfully deleted",
+          statusCode: 200
+        })
+      }
+      else{
+        return notAuthorized(res)
+      }
     }
     else{
       res.statusCode = 404
@@ -198,21 +254,37 @@ router.delete(
 
 router.post(
   '/:groupId/images',
+  restoreUser,
   requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params;
     const { url, preview } = req.body;
+    const { user } = req;
+
     // return res.json({groupId, url, preview})
     const group = await Group.findByPk(groupId);
     if(group){
-      group.previewImage = url
-      group.save()
-      const {id} = group
-      return res.json({
-        id,
-        url,
-        preview
-      });
+      if(isAuthorized(user, group))
+      {
+        if(preview){
+          group.previewImage = url
+        }
+        group.save()
+        const groupId = group.id
+        const groupImage = await GroupImage.create({
+          groupId,
+          url,
+          preview
+        })
+        return res.json({
+          id: groupImage.id,
+          url,
+          preview
+        });
+      }
+      else{
+        return notAuthorized(res)
+      }
     }
     else{
       res.statusCode = 404
@@ -227,59 +299,64 @@ router.post(
 router.post(
   '/:groupId/venues',
   validateVenue,
+  restoreUser,
   requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params
+    const { address, city, state, lat, lng } = req.body
     const { user } = req
     const group = await Group.findByPk(groupId)
-    if(group){
-      const { address, city, state, lat, lng } = req.body
-      const newVenue = await Venue.create({
-        groupId,
-        address,
-        city,
-        state,
-        lat,
-        lng
-      });
-
-      return res.json({
-        id: newVenue.id,
-        groupId,
-        address,
-        city,
-        state,
-        lat,
-        lng
-      });
-    }else{
-      res.status = 404
-      res.message = "Group couldn't be found"
-      return res.json({
-        message: "Group couldn't be found",
-        statusCode: 404
-      })
+    if(!group){
+      return groupNotFound(res)
     }
+
+    const memberships = await Membership.findAll({where: {groupId}})
+    if(!isAuthorized(user, group, memberships)){
+      return notAuthorized(res)
+    }
+    const newVenue = await Venue.create({
+      groupId,
+      address,
+      city,
+      state,
+      lat,
+      lng
+    });
+
+    return res.json({
+      id: newVenue.id,
+      groupId,
+      address,
+      city,
+      state,
+      lat,
+      lng
+    });
   }
 );
 
 router.get(
   '/:groupId/venues',
+  restoreUser,
   requireAuth,
   async (req, res, next) => {
     const { groupId } = req.params
     const { user } = req
-    const venue = await Venue.findByPk(groupId)
-    if(venue){
+    const group  = await Group.findByPk(groupId)
+
+    if(!group){
+      return groupNotFound(res)
+    }
+
+    const venue = await Venue.findAll({ where : {groupId}})
+    const memberships = await Membership.findAll({ where: {groupId}})
+    if(isAuthorized(user, group, memberships)){
       return res.json({
         Venues: venue
       });
-    }else{
-      res.statusCode = 404
-      return res.json({
-        message: "Group couldn't be found",
-        statusCode: 404
-      })
+    }
+    else{
+      return notAuthorized(res)
     }
   }
 );
@@ -288,7 +365,11 @@ router.get(
   '/:groupId/events',
   async (req, res, next) => {
     const { groupId } = req.params
-    const events = await Event.findAll({where: {groupId}})
+    const query = {where: {groupId}}
+    query.include = [
+      {model: Group, attributes: ["id", "name", "city", "state"]},
+      {model: Venue, attributes: ["id", "city", "state"]}]
+    const events = await Event.findAll(query)
     if(events.length){
       return res.json({
         Events: events
@@ -306,6 +387,7 @@ router.get(
 
 router.post(
   '/:groupId/events',
+  restoreUser,
   requireAuth,
   validateEvent,            //For postman test to create event by invalid groupId is it ok if validator checks for errors before my code checks URL params?
   async (req, res, next) => {
@@ -356,7 +438,21 @@ router.post(
     const { user } = req
     const organizerId = user.id
     const newGroup = await Group.create({ organizerId, name, about, type, private, city, state})
-    return res.json(newGroup);
+
+    // const newMember = await Membership.create({  // I originally thought that organizers needed to be in the members list but the requirements state otherwise.
+    //   userId: user.id,
+    //   groupId: newGroup.id,
+    //   status: "co-host"
+    // })
+    return res.json({
+      id: newGroup.id,
+      name,
+      about,
+      type,
+      private,
+      city,
+      state
+    });
   }
 );
 
@@ -442,13 +538,6 @@ router.put(
 
     const group = await Group.findByPk(groupId, {include: [{model: Membership }]})
 
-    if(group.organizerId !== user.id){
-      res.statusCode = 403
-      return res.json({
-        message: "You must be an organizer or co-host to create events.",
-        statusCode: 403
-      })
-    }
     if(!group){
       res.statusCode = 404
       return res.json({
@@ -456,7 +545,14 @@ router.put(
         statusCode: 404
       })
     }
-
+    const [currentUser] = group.Memberships.filter(member => user.id === member.userId)
+    if(!currentUser.status.match(/co-host/i)){
+      res.statusCode = 403
+      return res.json({
+        message: "You must be an organizer or co-host to create events.",
+        statusCode: 403
+      })
+    }
     const newUser = await User.findByPk(memberId)
 
     if(!newUser){
@@ -471,7 +567,7 @@ router.put(
     }
 
     const [membership] = group.Memberships.filter(member => member.userId === memberId)
-
+    //return res.json([membership, group.Memberships])
     if(!membership){
       res.statusCode = 404
       return res.json({
@@ -497,6 +593,7 @@ router.put(
     }
 
     membership.status = status
+    membership.save()
 
     return res.json(membership)
   });
@@ -517,9 +614,9 @@ router.post(
         statusCode: 404
       })
     }
-
-    if(group.Memberships.length > 0){
-      const message = group.Memberships[0].status === 'pending' ?
+    const member = group.Memberships.filter( m => m.userId === user.id)
+    if(member.length > 0){
+      const message = member[0].status === 'pending' ?
       "Membership has already been requested" :
       "User is already a member of the group"
       res.statusCode = 400
@@ -545,17 +642,16 @@ router.post(
 
 router.get(
   '/:groupId/members',
+  restoreUser,
   async (req, res, next) => {
     const { groupId } = req.params
+    const { user } = req
+    const group = await Group.findByPk(groupId)
 
-    const userIsHost = false;  //needs updated for organizers and cohosts
-    let members
-    if(userIsHost){
-      members = await Membership.findAll({where: {groupId}})
-    }
-    else{
-      members = await Membership.findAll({where: {groupId, status: {[Op.in] : ["co-host", "member"]}}})
-    }
+
+    members = await Membership.findAll({where: {groupId}})
+
+
 
     if(members.length < 1){
       res.statusCode = 404
@@ -564,7 +660,6 @@ router.get(
         statusCode: 404
       })
     }
-
     return res.json({
       Members: members
     });

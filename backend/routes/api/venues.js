@@ -1,7 +1,7 @@
 // backend/routes/api/session.js
 const express = require('express');
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
-const { User, Venue } = require('../../db/models');
+const { User, Venue, Group, Membership } = require('../../db/models');
 const router = express.Router();
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -25,16 +25,60 @@ const validateVenue = [
   handleValidationErrors
 ];
 
+const isAuthorized = (currentUser, group, memberships) => {
+  console.log([
+    {currentUser: currentUser},
+    group,
+    memberships
+  ])
+  if(memberships){  //Needs to be tested on code with memberships
+    const currentUserMemberships = memberships.filter( m => m.userId === currentUser.id)
+    console.log(memberships, currentUserMemberships)
+    if(currentUserMemberships[0].status.match(/^co-host$/i)){
+      return true
+    }
+  }
+
+  if(currentUser.id === group.organizerId){
+    return true
+  }
+
+  return false
+}
+
+const notAuthorized = res => {
+  res.statusCode = 403
+  res.message = "Forbidden"
+  return res.json({
+    message: "Forbidden",
+    statusCode: 403
+  })
+}
+
+const groupNotFound = res => {
+  res.statusCode = 404
+  res.message = "Group couldn't be found"
+  return res.json({
+    message: "Group couldn't be found",
+    statusCode: 404
+  })
+}
+
 router.put(
   '/:venueId',
+  restoreUser,
   requireAuth,
   validateVenue,
   async (req, res, next) => {
     const { venueId } = req.params
     const { address, city, state, lat, lgn } = req.body
     const fields = { address, city, state, lat, lgn }
-    const { user } = req
+    const {user} = req
+
     const venue = await Venue.findByPk(venueId);
+    const {groupId} = venue
+    const group = await Group.findByPk(groupId);
+    const memberships = await Membership.findAll({where: {groupId}})
 
     if(venue){
       for(i in fields){

@@ -57,7 +57,7 @@ router.post(
       const { user } = req;
       if (user) {
         return res.json(user.toSafeObject());
-      } else return res.json({});
+      } else return res.json();
     }
   );
 
@@ -80,9 +80,7 @@ router.post(
 
       await setTokenCookie(res, user);
 
-      return res.json({
-        user
-      });
+      return res.json(user);
     }
   );
 
