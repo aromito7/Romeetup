@@ -80,22 +80,23 @@ router.put(
     const group = await Group.findByPk(groupId);
     const memberships = await Membership.findAll({where: {groupId}})
 
-    if(venue){
-      for(i in fields){
-        if(fields[i] !== undefined)
-          venue[i] = fields[i]
-      }
-
-      venue.save()
-      res.json(venue)
-    }
-    else{
+    if(!venue){
       res.statusCode = 404
-      res.json({
+      return res.json({
         message: "Venue couldn't be found",
         statusCode: 404
       })
     }
+    if(!isAuthorized(user, group, memberships)){
+      return notAuthorized(res)
+    }
+    for(i in fields){
+      if(fields[i] !== undefined)
+        venue[i] = fields[i]
+    }
+
+    venue.save()
+    res.json(venue)
   });
 
   router.get(
