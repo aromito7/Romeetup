@@ -16,6 +16,10 @@ if (process.env.NODE_ENV !== 'production') {
   window.store = store;
 }
 
+// if (process.env.NODE_ENV !== "production") {
+//   window.store = store;
+// }
+
 function Root() {
   return (
     <ReduxProvider store={store}>
