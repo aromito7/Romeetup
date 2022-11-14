@@ -11,9 +11,9 @@ function LoginFormPage() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState([]);
 
-  // console.log(`Session user: ${sessionUser}`)
+  console.log(`Session user: ${sessionUser}`)
   if (sessionUser) {
-    // console.log("Hello Session User");
+    console.log("Hello Session User");
     return (
       <Redirect to="/"/>
     )}
