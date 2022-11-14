@@ -1,0 +1,16 @@
+#navigation {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+
+.top-right{
+    margin-left:auto;
+
+}
+
+.navbar {
+    padding: 8px;
+}
