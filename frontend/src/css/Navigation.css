@@ -5,7 +5,6 @@
     display: flex;
 }
 
-
 .top-right{
     margin-left:auto;
 
@@ -13,4 +12,6 @@
 
 .navbar {
     padding: 8px;
+    color: black;
+    text-decoration: none;
 }
