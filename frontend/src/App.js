@@ -1,6 +1,5 @@
 import Homepage from './components/Homepage';
 import Navigation from './components/Navigation';
-import Login from './components/Login'
 import topRightImage from './images/top-right-blob.png';
 import centerLeftImage from './images/center-left-blob.png';
 import centerImage from './images/center-blob.png';
