@@ -13,8 +13,8 @@ function LoginFormPage() {
 
   //console.log(`Session user: ${sessionUser}`)
   if (sessionUser) {
-    console.log("Hello Session User");
-    console.log(sessionUser)
+    // console.log("Hello Session User");
+    // console.log(sessionUser)
     return (
       <Redirect to="/"/>
     )}

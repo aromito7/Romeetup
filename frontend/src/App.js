@@ -9,6 +9,8 @@ import LoginFormPage from './components/LoginFormPage';
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import * as sessionActions from "./store/session";
+import SignupFormPage from './components/SignupFormPage';
+import Logout from './components/Logout';
 
 function App() {
   const dispatch = useDispatch();
@@ -31,6 +33,12 @@ function App() {
             </Route>
             <Route path="/login">
               <LoginFormPage/>
+            </Route>
+            <Route path="/logout">
+              <Logout />
+            </Route>
+            <Route path="/signup">
+              <SignupFormPage/>
             </Route>
             <Route path="/">
               Error 404
