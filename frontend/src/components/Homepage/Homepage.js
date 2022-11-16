@@ -1,5 +1,6 @@
-import '../css/Homepage.css'
-import cartoonScreen from '../images/cartoon-screen.png'
+import './Homepage.css'
+import cartoonScreen from '../../images/cartoon-screen.png'
+import TripleImageLandingPage from './TripleImageLandingPage'
 
 export default () => (
     <div id="homepage">
@@ -15,17 +16,8 @@ export default () => (
             <div className='right-half'>
                 <img src={cartoonScreen}/>
             </div>
-            <div className='pictures'>
-                <div className='first'>
-
-                </div>
-                <div className='second'>
-
-                </div>
-                <div className='third'>
-
-                </div>
-            </div>
         </div>
+        <TripleImageLandingPage/>
+        
     </div>
 )

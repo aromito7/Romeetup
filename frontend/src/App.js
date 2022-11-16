@@ -1,4 +1,4 @@
-import Homepage from './components/Homepage';
+import Homepage from './components/Homepage/Homepage';
 import Navigation from './components/Navigation/index';
 import topRightImage from './images/top-right-blob.png';
 import centerLeftImage from './images/center-left-blob.png';
@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import * as sessionActions from "./store/session";
 import SignupFormPage from './components/SignupFormPage';
 import Logout from './components/Logout';
+import FindPage from './components/FindPage/index'
 
 function App() {
   const dispatch = useDispatch();
@@ -40,6 +41,9 @@ function App() {
             </Route>
             <Route path="/signup">
               <SignupFormPage/>
+            </Route>
+            <Route path="/find">
+              <FindPage/>
             </Route>
             <Route path="/">
               Error 404

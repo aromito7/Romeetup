@@ -1,10 +1,10 @@
 #homepage{
     justify-content: center;
-    max-width: 1100px;
+    max-width: 900px;
     height: 1200px;
     margin: 200px auto auto auto;
 
-    display: flex;
+    display: flex-wrap;
 }
 
 .half-row{
@@ -12,8 +12,20 @@
     grid-template-columns: 45% 45%;
     justify-content: space-between;
     height: 200px;
+    margin: 0 0 50px 0;
 }
 
+.triplePictures{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 5px;
+    width: 100%;
+    margin: 50px 0 50px 0;
+}
+
+.triplePictures img{
+    max-width: 300px;
+}
 
 #main-content{
     margin:auto;
