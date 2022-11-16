@@ -20,8 +20,7 @@ function SignupFormPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setHasSubmitted(true)
-    console.log("Hello")
-    if(!errors){
+    if(errors.length < 1){
       const newUser = {
         firstName,
         lastName,
@@ -29,12 +28,13 @@ function SignupFormPage() {
         username,
         password
       }
-      
-      return dispatch(sessionActions.signup(newUser))
-        .catch(async (res) => {
-          const data = await res.json();
-          if (data && data.errors) setErrors(data.errors);
-        });
+
+    console.log("Hello World")
+    return dispatch(sessionActions.signup(newUser))
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) setErrors(data.errors);
+      });
     }
 
   };
@@ -116,7 +116,7 @@ function SignupFormPage() {
           required
         />
       </label>
-      <button type="submit" formNoValidate="true">Sign Up</button>
+      <button type="submit" formNoValidate={true}>Sign Up</button>
     </form>
   );
 }

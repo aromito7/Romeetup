@@ -15,6 +15,17 @@ export default () => (
             <div className='right-half'>
                 <img src={cartoonScreen}/>
             </div>
+            <div className='pictures'>
+                <div className='first'>
+
+                </div>
+                <div className='second'>
+
+                </div>
+                <div className='third'>
+
+                </div>
+            </div>
         </div>
     </div>
 )
