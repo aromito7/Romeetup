@@ -68,7 +68,7 @@ const setTokenCookie = (res, user) => {
     //   group,
     //   memberships
     // ])
-    console.log(currentUser.id, group.organizerId)
+    //console.log(currentUser.id, group.organizerId)
     if(memberships && memberships.length > 0){  //Needs to be tested on code with memberships
     const [currentUserMemberships] = memberships.filter( m => m.userId === currentUser.id)
       //console.log(memberships, currentUserMemberships)

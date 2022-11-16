@@ -29,7 +29,6 @@ function SignupFormPage() {
         password
       }
 
-    console.log("Hello World")
     return dispatch(sessionActions.signup(newUser))
       .catch(async (res) => {
         const data = await res.json();

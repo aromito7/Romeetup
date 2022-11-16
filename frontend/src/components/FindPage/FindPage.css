@@ -1,3 +1,20 @@
-#results li{
+#results div{
     margin: 25px;
+}
+
+.toggle{
+    margin: 20px;
+    text-decoration: none;
+    color:gray;
+}
+
+.result img{
+    width: 162px;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.result{
+    display: flex;
+
 }

@@ -1,6 +1,8 @@
 import './Homepage.css'
 import cartoonScreen from '../../images/cartoon-screen.png'
 import TripleImageLandingPage from './TripleImageLandingPage'
+import SevenOvalLinks from './SevenOvalLinks'
+import SearchWhatsHappening from './SearchWhatsHappening'
 
 export default () => (
     <div id="homepage">
@@ -18,6 +20,8 @@ export default () => (
             </div>
         </div>
         <TripleImageLandingPage/>
-        
+        <SevenOvalLinks/>
+        <SearchWhatsHappening/>
+
     </div>
 )

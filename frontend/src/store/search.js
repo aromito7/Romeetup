@@ -30,6 +30,13 @@ const removeGroups = () => {
   };
 };
 
+export const searchGroups = (params) => async dispatch => {
+  const response = await csrfFetch('/api/groups');
+  const groups = await response.json();
+  dispatch(setEvents(groups));
+  return groups
+}
+
 export const searchEvents = (params) => async dispatch => {
     const response = await csrfFetch('/api/events');
     const events = await response.json();
