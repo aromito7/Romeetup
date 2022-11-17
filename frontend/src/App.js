@@ -12,6 +12,7 @@ import * as sessionActions from "./store/session";
 import SignupFormPage from './components/SignupFormPage';
 import Logout from './components/Logout';
 import FindPage from './components/FindPage/index'
+import CreateGroupPage from './components/CreateGroupPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -26,9 +27,8 @@ function App() {
         <img src={topRightImage} id='top-right-blob' className='blob'/>
 
         <Navigation isLoaded={isLoaded}/>
+        <img src={centerImage} id='center-blob' className='blob'/>
         <div id='main'>
-
-          <img src={centerImage} id='center-blob' className='blob'/>
           <Switch>
             <Route exact path="/">
               <Homepage/>
@@ -44,6 +44,9 @@ function App() {
             </Route>
             <Route path="/find">
               <FindPage/>
+            </Route>
+            <Route path="/groups">
+              <CreateGroupPage/>
             </Route>
             <Route path="/">
               Error 404

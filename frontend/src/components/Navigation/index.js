@@ -12,13 +12,16 @@ function Navigation({ isLoaded }){
   if (sessionUser) {
     sessionLinks = (
     <>
+        <NavLink to='/groups' className='navbar' id='new-group'>Start a new group</NavLink>
         <ProfileButton user={sessionUser} />
+        <NavLink to='/language' className='navbar' id='language'>English</NavLink>
         <NavLink to='/logout' className='navbar' id='logout'>Log out</NavLink>
     </>
     );
   } else {
     sessionLinks = (
     <>
+        <NavLink to='/language' className='navbar' id='language'>English</NavLink>
         <NavLink to='/login' className='navbar' id='login'>Log in</NavLink>
         <NavLink to='/signup' className='navbar' id='signup'>Sign up</NavLink>
     </>
@@ -31,7 +34,6 @@ function Navigation({ isLoaded }){
             <NavLink to='/' className='navbar' id='home'>Romeetup</NavLink>
         </div>
         <div className='top-right'>
-            <NavLink to='/language' className='navbar' id='language'>English</NavLink>
             {sessionLinks}
         </div>
     </div>

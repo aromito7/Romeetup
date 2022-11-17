@@ -17,25 +17,6 @@ const removeEvents = () => {
   };
 };
 
-const setGroups = (groups) => {
-  return {
-    type: SET_GROUPS,
-    payload: groups
-  }
-}
-
-const removeGroups = () => {
-  return {
-    type: REMOVE_GROUPS,
-  };
-};
-
-export const searchGroups = (params) => async dispatch => {
-  const response = await csrfFetch('/api/groups');
-  const groups = await response.json();
-  dispatch(setEvents(groups));
-  return groups
-}
 
 export const searchEvents = (params) => async dispatch => {
     const response = await csrfFetch('/api/events');
@@ -45,8 +26,8 @@ export const searchEvents = (params) => async dispatch => {
   }
 
 
-const initialState = { events: [], groups: [] };
-const searchReducer = (state = initialState, action) => {
+const initialState = { events: [] };
+const eventReducer = (state = initialState, action) => {
   let newState;
   switch (action.type) {
     case SET_EVENTS:
@@ -62,4 +43,4 @@ const searchReducer = (state = initialState, action) => {
   }
 };
 
-export default searchReducer;
+export default eventReducer;
