@@ -6,12 +6,10 @@ import { NavLink, Switch, Route } from "react-router-dom";
 export default () => {
     const dispatch = useDispatch()
 
-
     if(useSelector(state => state.events.events.length < 1)) dispatch(eventActions.searchEvents()).then(() => 1 + 1);
-    if(useSelector(state => state.groups.groups.length < 1)) dispatch(groupActions.searchGroups()).then(() => 1 + 1);
-
-
     const events = useSelector(state => state.events.events)
+
+    if(useSelector(state => state.groups.groups.length < 1)) dispatch(groupActions.searchGroups()).then(() => 1 + 1);
     const groups = useSelector(state => state.groups.groups)
     return (
     <div id="search-page">
@@ -59,7 +57,7 @@ export default () => {
                     return(
                         <div className="result">
                             <div>
-                                <img src={"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png"}/>
+                                <img src={group.previewImage || "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png"}/>
                             </div>
                             <div>
                                 <p>

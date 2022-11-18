@@ -13,6 +13,31 @@ module.exports = {
         groupId: 2,
         url: "https://images.ctfassets.net/3s5io6mnxfqz/7qYAiFTwyMaA3A1Q0iqgLD/92eafb866dc9b2b8a650c147d637bfb9/AdobeStock_246336340.jpeg",
         preview: true
+      },
+      {
+        groupId: 3,
+        url: "https://www.williamsburg.k12.pa.us/cms/lib/PA01001585/Centricity/Domain/91/cross-country-clip-art-many-interesting-cliparts-png-clipartpost-cross-country-png-600_600.png",
+        preview: true
+      },
+      {
+        groupId: 4,
+        url: "https://static1.cbrimages.com/wordpress/wp-content/uploads/2022/05/MTG-cards-in-hand.jpg",
+        preview: true
+      },
+      {
+        groupId: 5,
+        url: "https://dormhigh.com/wp-content/uploads/2014/02/quarters-drinking-game-1.jpg",
+        preview: true
+      },
+      {
+        groupId: 6,
+        url: "https://img.freepik.com/free-vector/karaoke-with-microphones-stars-neon-style_24908-60794.jpg?w=2000",
+        preview: true
+      },
+      {
+        groupId: 7,
+        url: "https://www.kindpng.com/picc/m/573-5738120_play-among-us-on-pc-among-us-em.png",
+        preview: true
       }
     ], {});
   },

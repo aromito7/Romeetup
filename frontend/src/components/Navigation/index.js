@@ -12,7 +12,7 @@ function Navigation({ isLoaded }){
   if (sessionUser) {
     sessionLinks = (
     <>
-        <NavLink to='/groups' className='navbar' id='new-group'>Start a new group</NavLink>
+        <NavLink to={{pathname:'/groups', state: {modal: true}}} className='navbar' id='new-group'>Start a new group</NavLink>
         <ProfileButton user={sessionUser} />
         <NavLink to='/language' className='navbar' id='language'>English</NavLink>
         <NavLink to='/logout' className='navbar' id='logout'>Log out</NavLink>

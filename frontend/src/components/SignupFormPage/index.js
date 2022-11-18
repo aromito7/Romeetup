@@ -35,7 +35,6 @@ function SignupFormPage() {
         if (data && data.errors) setErrors(data.errors);
       });
     }
-
   };
 
   useEffect(() => {

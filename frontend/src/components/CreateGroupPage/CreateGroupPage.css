@@ -1,6 +1,27 @@
 #create-group-form{
     display: flex;
     flex-direction: column;
-    width: 66%;
     align-items:flex-end;
+}
+
+#create-group-page h1{
+    text-align: center;
+}
+
+#create-group-page select{
+    width: 168px;
+    margin-left: 9px;
+}
+
+#create-group-page #private{
+    margin-right: 155px;
+    margin-left: 9px;
+}
+
+.modal-content{
+    margin: 50px;
+}
+
+#error-list{
+    width: 50%;
 }
