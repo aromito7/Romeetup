@@ -2,15 +2,36 @@ import { useDispatch, useSelector } from "react-redux"
 import * as eventActions from "../../store/events";
 import * as groupActions from "../../store/groups";
 import './FindPage.css'
-import { NavLink, Switch, Route } from "react-router-dom";
+import { NavLink, Switch, Route, useHistory} from "react-router-dom";
+import { useEffect } from "react";
 export default () => {
     const dispatch = useDispatch()
+    const history = useHistory()
 
-    if(useSelector(state => state.events.events.length < 1)) dispatch(eventActions.searchEvents()).then(() => 1 + 1);
+    const getEvent = (id) => {
+        return () => history.push("/events/" + id)
+    }
+    const getGroup = (e) => {
+        history.push("/")
+    }
+
+    // if(useSelector(state => state.events.events.length < 1)) dispatch(eventActions.searchEvents()).then(() => 1 + 1);
+    // const events = useSelector(state => state.events.events)
+
+    // if(useSelector(state => state.groups.groups.length < 1)) dispatch(groupActions.searchGroups()).then(() => 1 + 1);
+    // const groups = useSelector(state => state.groups.groups)
+
+
+    useEffect(() => {
+        dispatch(eventActions.searchEvents()).then(() => 1 + 1);
+        dispatch(groupActions.searchGroups()).then(() => 1 + 1);
+    }, [dispatch])
+
     const events = useSelector(state => state.events.events)
-
-    if(useSelector(state => state.groups.groups.length < 1)) dispatch(groupActions.searchGroups()).then(() => 1 + 1);
     const groups = useSelector(state => state.groups.groups)
+
+    if(events.length < 1 || groups.length < 1) return
+
     return (
     <div id="search-page">
         <div id="events-groups-toggle">
@@ -28,7 +49,7 @@ export default () => {
                 {
                 events.map((event, i) => {
                     return(
-                        <div className="result">
+                        <div className="result" key={i} onClick={getEvent(event.id)}>
                             <div>
                                 <img src={event.EventImages[0].url}/>
                             </div>
@@ -55,7 +76,7 @@ export default () => {
                 {
                 groups.map((group, i) => {
                     return(
-                        <div className="result">
+                        <div className="result" key={i} onClick={getGroup}>
                             <div>
                                 <img src={group.previewImage || "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png"}/>
                             </div>

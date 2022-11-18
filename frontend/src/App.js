@@ -13,11 +13,12 @@ import SignupFormPage from './components/SignupFormPage';
 import Logout from './components/Logout';
 import FindPage from './components/FindPage/index'
 import CreateGroupPage from './components/CreateGroupPage';
+import ShowEvent from './components/ShowEvent';
 
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
   }, [dispatch]);
@@ -48,6 +49,9 @@ function App() {
             </Route>
             <Route path="/groups">
               <CreateGroupPage/>
+            </Route>
+            <Route path="/events/:eventId">
+              <ShowEvent/>
             </Route>
             <Route path="/">
               Error 404

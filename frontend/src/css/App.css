@@ -19,6 +19,8 @@ body{
 #center-blob{
     width: 900px;
     height: 900px;
+    left: 20%;
+    top: 10%;
 }
 
 .blob{

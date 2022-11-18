@@ -53,7 +53,6 @@ export default () => {
         const res = dispatch(groupActions.createNewGroup(options))
             .then((res) => res)
             .catch(async (res) => {
-            console.log(res)
             const data = await res.json();
             if (data && data.errors) setErrors(data.errors);
           });
@@ -86,9 +85,9 @@ export default () => {
         </form>
         <ul class="modal-content" id="error-list">
             {
-                errors.map(error => {
+                errors.map((error, i) => {
                     return (
-                        <li>{error}</li>
+                        <li key={i}>{error}</li>
                     )
                 })
             }

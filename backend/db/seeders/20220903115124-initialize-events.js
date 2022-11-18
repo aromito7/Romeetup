@@ -20,8 +20,8 @@ module.exports = {
         type: "Online",
         capacity: 10,
         price: 10,
-        startDate:   new Date(Date.now("2022-09-23")).toISOString(),
-        endDate: new Date(Date.now("2022-09-25")).toISOString()
+        startDate:  new Date("2022-09-23").toISOString(),
+        endDate: new Date("2022-09-25").toISOString()
       },
       {
         venueId: 2,

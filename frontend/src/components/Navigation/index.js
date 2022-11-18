@@ -31,7 +31,7 @@ function Navigation({ isLoaded }){
   return (
     <div id='navigation'>
         <div className='top-left'>
-            <NavLink to='/' className='navbar' id='home'>Romeetup</NavLink>
+            <NavLink to='/' className='navbar' id='romeetup'>Romeetup</NavLink>
         </div>
         <div className='top-right'>
             {sessionLinks}
