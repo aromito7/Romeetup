@@ -2,34 +2,6 @@ body{
     font-family:Arial, Helvetica, sans-serif;
 }
 
-#center-left-blob{
-    top: 675px;
-    left: 30px;
-    width: 300px;
-    height: 300px;
-}
-
-#top-right-blob{
-    top: 0px;
-    right: 0px;
-    width: 600px;
-    height: 600px;
-}
-
-#center-blob{
-    width: 900px;
-    height: 900px;
-    left: 20%;
-    top: 10%;
-}
-
-.blob{
-    position: absolute;
-    z-index: -1;
-    mix-blend-mode: multiply;
-
-}
-
 #app{
     position: relative;
     border: 0px;
@@ -39,11 +11,6 @@ body{
 
 #main{
     justify-content: center;
-    max-width: 1100px;
-    height: 1200px;
-    margin: 200px auto auto auto;
-
-
 }
 
 * {

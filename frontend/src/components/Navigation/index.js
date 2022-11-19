@@ -3,6 +3,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
+import icon from '../../images/internet.png'
 import './Navigation.css';
 
 function Navigation({ isLoaded }){
@@ -13,15 +14,14 @@ function Navigation({ isLoaded }){
     sessionLinks = (
     <>
         <NavLink to={{pathname:'/groups', state: {modal: true}}} className='navbar' id='new-group'>Start a new group</NavLink>
-        <ProfileButton user={sessionUser} />
-        <NavLink to='/language' className='navbar' id='language'>English</NavLink>
+        <NavLink to='/language' className='navbar' id='language'><i className="fa-solid fa-globe"/>English</NavLink>
         <NavLink to='/logout' className='navbar' id='logout'>Log out</NavLink>
     </>
     );
   } else {
     sessionLinks = (
     <>
-        <NavLink to='/language' className='navbar' id='language'>English</NavLink>
+        <NavLink to='/language' className='navbar' id='language'><img src={icon} id="language-icon"/>English</NavLink>
         <NavLink to='/login' className='navbar' id='login'>Log in</NavLink>
         <NavLink to='/signup' className='navbar' id='signup'>Sign up</NavLink>
     </>

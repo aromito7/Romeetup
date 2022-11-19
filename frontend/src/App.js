@@ -1,8 +1,5 @@
 import Homepage from './components/Homepage/Homepage';
 import Navigation from './components/Navigation/index';
-import topRightImage from './images/top-right-blob.png';
-import centerLeftImage from './images/center-left-blob.png';
-import centerImage from './images/center-blob.png';
 import { Route, Switch } from 'react-router-dom';
 import './css/App.css';
 import LoginFormPage from './components/LoginFormPage';
@@ -14,6 +11,7 @@ import Logout from './components/Logout';
 import FindPage from './components/FindPage/index'
 import CreateGroupPage from './components/CreateGroupPage';
 import ShowEvent from './components/ShowEvent';
+import ShowGroup from './components/ShowGroup';
 
 function App() {
   const dispatch = useDispatch();
@@ -25,11 +23,7 @@ function App() {
 
   return (
       <div id='app'>
-        <img src={centerLeftImage} id='center-left-blob' className='blob'/>
-        <img src={topRightImage} id='top-right-blob' className='blob'/>
-
         <Navigation isLoaded={isLoaded}/>
-        <img src={centerImage} id='center-blob' className='blob'/>
         <div id='main'>
           <Switch>
             <Route exact path="/">
@@ -47,11 +41,14 @@ function App() {
             <Route path="/find">
               <FindPage/>
             </Route>
-            <Route path="/groups">
+            <Route path="/groups/new">
               <CreateGroupPage/>
             </Route>
             <Route path="/events/:eventId">
               <ShowEvent/>
+            </Route>
+            <Route path="/groups/:groupId">
+              <ShowGroup/>
             </Route>
             <Route path="/">
               Error 404

@@ -1,8 +1,10 @@
 import { csrfFetch } from './csrf';
 
+const SET_GROUP = '/groups/setGroup'
 const SET_GROUPS = '/groups/setGroups';
-const REMOVE_GROUPS = '/groups/removeGroups';
 const ADD_GROUP = '/groups/addGroup'
+const REMOVE_GROUPS = '/groups/removeGroups';
+const REMOVE_GROUP = '/groups/removeGroup'
 
 const addGroup = (group) => {
     return {
@@ -18,11 +20,33 @@ const setGroups = (groups) => {
   }
 }
 
+const setGroup = (group) => {
+  return {
+    type: SET_GROUP,
+    payload: group
+  }
+}
+
 const removeGroups = () => {
   return {
     type: REMOVE_GROUPS,
   };
 };
+
+const removeGroup = (id) => {
+  return {
+    type: REMOVE_GROUP,
+    payload: id
+  }
+}
+
+export const deleteGroup = (id) => async dispatch => {
+  const url = '/api/groups/' + id
+  const options = {method: 'DELETE'}
+  const response = await csrfFetch(url, options);
+  dispatch(removeGroup(id))
+  return response
+}
 
 export const createNewGroup = (options) => async dispatch => {
   options = {...options, method:"POST"}
@@ -34,6 +58,14 @@ export const createNewGroup = (options) => async dispatch => {
   return group
 }
 
+export const getGroup = (id) => async dispatch => {
+  const url = '/api/groups/' + id
+  const response = await csrfFetch(url);
+  const group = await response.json();
+  dispatch(setGroup(group));
+  return group
+}
+
 export const searchGroups = (params) => async dispatch => {
   const response = await csrfFetch('/api/groups');
   const groups = await response.json();
@@ -41,24 +73,33 @@ export const searchGroups = (params) => async dispatch => {
   return groups
 }
 
-const initialState = { groups: [] };
+const initialState = { group: null, groups: [] };
 const groupReducer = (state = initialState, action) => {
   let newState;
   switch (action.type) {
     case ADD_GROUP:
-        newState = Object.assign({}, state);
-        newState.groups = [...newState.groups, action.payload]
-        return newState;
-    case SET_GROUPS:
-        newState = Object.assign({}, state);
-        newState.groups = action.payload;
+      newState = Object.assign({}, state);
+      newState.groups = [...newState.groups, action.payload]
       return newState;
+    case SET_GROUP:
+      newState = Object.assign({}, state);
+      newState.group = action.payload;
+      return newState;
+    case SET_GROUPS:
+      newState = Object.assign({}, state);
+      newState.groups = action.payload;
+      return newState;
+    case REMOVE_GROUP:
+      const id = action.payload
+      newState = Object.assign({}, state);
+      newState.groups = newState.groups.filter(group => group.id !== id)
+      return newState
     case REMOVE_GROUPS:
-        newState = Object.assign({}, state);
-        newState.groups = [];
-        return newState;
+      newState = Object.assign({}, state);
+      newState.groups = [];
+      return newState;
     default:
-        return state;
+      return state;
   }
 };
 

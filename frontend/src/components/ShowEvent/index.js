@@ -1,11 +1,12 @@
 import "./showEvent.css"
-import { useParams } from "react-router-dom"
-import { getEvent } from "../../store/events"
+import { useParams, useHistory } from "react-router-dom"
+import { getEvent, deleteEvent } from "../../store/events"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 
 export default () => {
     const dispatch = useDispatch()
+    const history = useHistory()
     const id = useParams().eventId
 
 
@@ -13,9 +14,14 @@ export default () => {
         dispatch(getEvent(id)).then(res => res)
     }, [dispatch])
 
+    const onClickDelete = async() => {
+        dispatch(deleteEvent(id))
+        history.push('/find/events')
+    }
+
     const event = useSelector(state => state.events.event)
-    // console.log("Event: ")
-    // console.log(event)
+    console.log("Event: ")
+    console.log(event)
     if(!event) return
     return(
         <div id="show-event">
@@ -24,7 +30,7 @@ export default () => {
                     <h1>{event.name}</h1>
                     <img src={event.EventImages[0].url}/>
                     <h2>Hosted By:</h2>
-                    <h2>User {event.Group.organizerId}</h2>
+                    <h2>{`${event.Group.User.firstName} ${event.Group.User.lastName}`}</h2>
                     <h2>Details:</h2>
                     <p>{event.description}</p>
                 </div>
@@ -48,7 +54,7 @@ export default () => {
             <div id="options">
                 <div id="reminder">This is an event reminder</div>
                 <button>Join Event</button>
-                <button>Delete Event</button>
+                <button onClick={onClickDelete}>Delete Event</button>
             </div>
         </div>
     )

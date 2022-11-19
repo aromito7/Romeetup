@@ -1,10 +1,9 @@
 import { csrfFetch } from './csrf';
 
-const SET_EVENT = '/session/setEvent';
-const SET_EVENTS = '/session/setEvents';
-const REMOVE_EVENTS = '/session/removeEvents';
-const SET_GROUPS = '/session/setGroups';
-const REMOVE_GROUPS = '/session/removeGroups'
+const SET_EVENT = '/events/setEvent';
+const SET_EVENTS = '/events/setEvents';
+const REMOVE_EVENTS = '/events/removeEvents';
+const REMOVE_EVENT = '/events/removeEvent'
 
 const setEvents = (events) => {
   return {
@@ -26,12 +25,27 @@ const removeEvents = () => {
   };
 };
 
+const removeEvent = (id) => {
+  return {
+    type: REMOVE_EVENT,
+    payload: id
+  }
+}
+
+export const deleteEvent = (id) => async dispatch => {
+  const url = '/api/events/' + id
+  const options = {method: 'DELETE'}
+  const response = await csrfFetch(url, options);
+  dispatch(removeEvent(id))
+  return response
+}
+
 export const getEvent = (id) => async dispatch => {
   const url = '/api/events/' + id
   // console.log(`url: ${url}`)
   const response = await csrfFetch(url);
   const event = await response.json();
-  console.log(event)
+  // console.log(event)
   dispatch(setEvent(event));
   // console.log("Dispatcher Event:")
   // console.log(event)
@@ -64,6 +78,11 @@ const eventReducer = (state = initialState, action) => {
       newState = Object.assign({}, state);
       newState.events = [];
       return newState;
+    case REMOVE_EVENT:
+      const id = action.payload
+      newState = Object.assign({}, state);
+      newState.events = newState.events.filter(event => event.id !== id)
+      return newState
     default:
       return state;
   }

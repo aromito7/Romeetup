@@ -14,6 +14,11 @@
     margin: 50px;
 }
 
+#show-group-left img{
+    height: 200px;
+    width: 300px;
+}
+
 #show-group-right{
     flex: 1;
     margin: 50px;

@@ -1,11 +1,13 @@
-#results div{
-    margin: 25px;
+#results{
+    border-top: 1px;
 }
 
 .toggle{
-    margin: 20px;
     text-decoration: none;
     color:gray;
+    margin-right: 10px;
+    font-size: 14pt;
+    justify-self: center;
 }
 
 .result img{
@@ -14,7 +16,66 @@
     border-radius: 10px;
 }
 
+
 .result{
     display: flex;
+    margin-top: 50px;
+    cursor: pointer;
+}
 
+#search-page{
+    margin-left: 150px;
+}
+
+
+#events-groups-toggle{
+    height: 50px;
+    top: 50px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+#location-options, #events-groups-toggle{
+    position: sticky;
+    background-color: white;
+}
+
+#location-options{
+    margin-top: 10px;
+}
+
+#location{
+    height: 60px;
+    border-bottom: 1px solid lightgrey;
+    width: 80%;
+    position: sticky;
+    top: 100px;
+    background-color: white;
+    padding-bottom: 20px;
+}
+
+#location-options select{
+    border-radius: 20px;
+    display: inline-block;
+    text-align: center;
+    margin-right: 20px;
+    background-color: rgb(246, 247, 248);
+    height: 40px;
+    border: none;
+    font-weight:bold;
+    cursor: pointer;
+}
+
+#city-state{
+    color:grey;
+}
+
+#location-options option{
+    font-size: 14px;
+    color: grey;
+}
+
+.different{
+    background-color: teal;
 }

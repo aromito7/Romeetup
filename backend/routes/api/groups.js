@@ -9,6 +9,7 @@ const venue = require('../../db/models/venue');
 const { Op } = require('sequelize');
 const { execSync } = require('child_process');
 const user = require('../../db/models/user');
+const { query } = require('express');
 
 const router = express.Router();
 
@@ -132,8 +133,10 @@ const validateEvent = [
 router.get(
   '/',
   async (req, res) => {
-    const groups = await Group.findAll({});
-
+    const query = {}
+    query.include = [
+      {model: User}]//, attributes: ["id", "firstName", "city", "state"]}]
+    const groups = await Group.findAll(query);
     return res.json(groups);
   }
 );
@@ -161,7 +164,9 @@ router.get(
   '/:groupId',
   async (req, res, next) => {
     const { groupId } = req.params;
-    const groups = await Group.findByPk(groupId)
+    query.include = [
+      {model: User}]
+    const groups = await Group.findByPk(groupId, query)
     if(groups){
       return res.json(groups);
     }else{
