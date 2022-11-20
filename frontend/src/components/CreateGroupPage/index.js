@@ -5,7 +5,7 @@ import * as groupActions from "../../store/groups";
 import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 
-export default () => {
+export default ({group}) => {
     const modal = true
     const history = useHistory()
     const dispatch = useDispatch()

@@ -1,5 +1,5 @@
 import "./showGroup.css"
-import { useParams, useHistory } from "react-router-dom"
+import { useParams, useHistory, Redirect } from "react-router-dom"
 import { getGroup, deleteGroup } from "../../store/groups"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
@@ -8,21 +8,34 @@ export default () => {
     const dispatch = useDispatch()
     const history = useHistory()
     const id = useParams().groupId
-
+    const currentUser = useSelector(state => state.session.user)
+    const userId = currentUser ? currentUser.id : -1
 
     useEffect(() => {
         dispatch(getGroup(id)).then(res => res)
     }, [dispatch])
 
     const onClickDelete = async() => {
-        await dispatch(deleteGroup(id).then(res=> res))
-        history.push('/find/groups')
+        dispatch(deleteGroup(id)).then(history.push("/"))
+    }
+
+    const onClickEdit = () => {
+        <Redirect to="/group/new" group={group}/>
     }
 
     const group = useSelector(state => state.groups.group)
     // console.log("Group: ")
     // console.log(group)
     if(!group) return "No current group"
+    console.log(currentUser, userId, group.organizerId)
+    const UserButtons = () => userId === group.organizerId ? (
+        <>
+            <button className="right-options">Create an event</button>
+            <button className="right-options" onClick={onClickEdit}>Edit group</button>
+            <button className="right-options" onClick={onClickDelete}>Delete this group</button>
+        </>
+    ) : <button className="right-options">Join this group</button>
+
     return(
         <div id="show-group">
             <div id="group-details-container">
@@ -61,7 +74,7 @@ export default () => {
                         <button>More</button>
                     </div>
                     <div id="group-option-bar-right">
-                        <button>Join this group</button>
+                        <UserButtons/>
                     </div>
                 </div>
             </div>

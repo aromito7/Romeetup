@@ -59,11 +59,12 @@ const FindPage = () => {
                             Events Near Pittsburgh, PA
                         </div>
                         <div id="location-options">
-                            <select id="event-times" className={document.getElementById("event-times") === "Any time" ? "default" : "different" }>{times.map(time => (<option>{time}</option>))}</select>
-                            <select id="event-types">{types.map(type => (<option>{type}</option>))}</select>
-                            <select id="event-distances">{distances.map(distance => (<option>{distance}</option>))}</select>
-                            <select id="event-categories">{categories.map(category => (<option>{category}</option>))}</select>
-                            Sort by: <select id="event-sort">{sortBys.map(sort => (<option>{sort}</option>))}</select>
+                            <select id="event-times" className={document.getElementById("event-times") === "Any time" ? "default" : "different" }>{times.map((time, i) => (<option key={i
+                            }>{time}</option>))}</select>
+                            <select id="event-types">{types.map((type, i) => (<option key={i}>{type}</option>))}</select>
+                            <select id="event-distances">{distances.map((distance, i) => (<option key={i}>{distance}</option>))}</select>
+                            <select id="event-categories">{categories.map((category, i) => (<option key={i}>{category}</option>))}</select>
+                            Sort by: <select id="event-sort">{sortBys.map((sort, i) => (<option key={i}>{sort}</option>))}</select>
                         </div>
                     </div>
                     {

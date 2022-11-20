@@ -26,7 +26,6 @@ export default () => {
     // console.log(currentUser)
     // console.log(`${event.Group.organizerId} ${currentUser.id}`)
     const FooterButtons = () => (currentUser.id === event.Group.organizerId ? (
-
         <>
             <button onClick={onClickDelete}>Delete Event</button>
             <button>Edit Event</button>

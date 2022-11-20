@@ -146,3 +146,7 @@
 #event-host > #message{
     color: rgb(0, 130, 148);
 }
+
+.right-options{
+    cursor: pointer;
+}
