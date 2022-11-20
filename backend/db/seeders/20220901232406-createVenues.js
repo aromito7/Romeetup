@@ -30,7 +30,7 @@ module.exports = {
       },
       {
         groupId: 4,
-        address: "Convention Center",
+        address: "David L. Lawrence Convention Center",
         city: "Pittsburgh",
         state: "PA",
         lat: 40.2645,
@@ -54,7 +54,7 @@ module.exports = {
       },
       {
         groupId: 7,
-        address: 'Martini',
+        address: 'Martini Discord Channel',
         city: 'Discord',
         state: 'Internet',
         lat: 42.0420,

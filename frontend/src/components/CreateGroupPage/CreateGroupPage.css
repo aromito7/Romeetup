@@ -2,6 +2,26 @@
     display: flex;
     flex-direction: column;
     align-items:flex-end;
+    color: grey;
+}
+
+#create-group-page{
+    background-color: rgb(246, 247, 248);
+    top: 130px;
+    border:none;
+    overflow-y: auto;
+    margin: auto;
+    width: 1000px;
+}
+
+#create-group-form textarea{
+    height: 150px;
+    width: 80%;
+}
+
+#create-group-form .left{
+    align-self: center;
+    padding-left: 80px;
 }
 
 #create-group-page h1{
@@ -23,5 +43,21 @@
 }
 
 #error-list{
-    width: 50%;
+    width: 100%;
+    align-self: flex-start;
+    color: red;
+}
+
+#create-group-title{
+    color: rgb(0, 130, 148);
+}
+
+#new-group-submit{
+    margin-top: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(246, 88, 88);
+    color: white;
+    padding: 5px;
+    cursor: pointer;
 }

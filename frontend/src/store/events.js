@@ -82,6 +82,7 @@ const eventReducer = (state = initialState, action) => {
       const id = action.payload
       newState = Object.assign({}, state);
       newState.events = newState.events.filter(event => event.id !== id)
+      newState.event = null
       return newState
     default:
       return state;

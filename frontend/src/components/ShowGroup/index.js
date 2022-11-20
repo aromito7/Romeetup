@@ -25,36 +25,60 @@ export default () => {
     if(!group) return "No current group"
     return(
         <div id="show-group">
-            <div id="group-details">
-                <div id="show-group-left">
+            <div id="group-details-container">
+                <img src={group.previewImage}/>
+                <div id="group-details">
                     <h1>{group.name}</h1>
-                    <img src={group.previewImage}/>
-                    <h2>Hosted By:</h2>
-                    <h2>User {group.organizerId}</h2>
-                    <h2>Details:</h2>
-                    <p>{group.about}</p>
-                </div>
-                <div id="show-group-right">
-                    <div id="event-group">
-                        <p>Hello, Text</p>
+                    <div class="group-details-top-div">
+                        <i className="fa-solid fa-location-dot"/>
+                        <p>{group.city ? `${group.city}, ${group.state}`: "Online"}</p>
                     </div>
-                    <div id="details">
-                        <div id="dates">
-                            <div className="dates">{(group.startDate ? group.startDate : Date())
-                            .match(/^\w{3} \w{3} \d{1,2} \d{4}/)}</div>
-                            <div className="dates">{"to " + (group.endDate ? group.endDate : Date())
-                            .match(/^\w{3} \w{3} \d{1,2} \d{4}/)}</div>
-                        </div>
-                        <div id="description">
-                            <div>group type: {group.type}</div>
-                        </div>
+                    <div class="group-details-top-div">
+                        <i className="fa-solid fa-user-group"/>
+                        <p>1 Members - {group.private ? "Public" : "Private"}</p>
+                    </div>
+                    <div class="group-details-top-div">
+                        <i className="fa-solid fa-user"/>
+                        <p>Organized by <strong>{group.User.firstName} {group.User.lastName}</strong></p>
+                    </div>
+                    <div id="group-details-bottom-icons">
+                        <p>Share: </p>
+                        <i className="fa-brands fa-square-facebook"/>
+                        <i className="fa-brands fa-twitter"/>
+                        <i className="fa-brands fa-linkedin"/>
+                        <i className="fa-solid fa-envelope"/>
                     </div>
                 </div>
             </div>
-            <div id="options">
-                <div id="reminder">This is an group reminder</div>
-                <button>Join group</button>
-                <button onClick={onClickDelete}>Delete group</button>
+            <div id="group-option-bar-container">
+                <div id="group-option-bar">
+                    <div id="group-option-bar-left">
+                        <button>About</button>
+                        <button>Events</button>
+                        <button>Members</button>
+                        <button>Photos</button>
+                        <button>Discussions</button>
+                        <button>More</button>
+                    </div>
+                    <div id="group-option-bar-right">
+                        <button>Join this group</button>
+                    </div>
+                </div>
+            </div>
+            <div id="group-description-container">
+                <div id="group-description">
+                    <p>{group.about}</p>
+                    <div id="event-group">
+                        <p>Organizers</p>
+                        <i className="fa-solid fa-user fa-3x"/>
+                        <div id="event-host">
+                            <p>{group.User.firstName} {group.User.lastName}</p>
+                            <p id="message">Message</p>
+                        </div>
+                    </div>
+                    <div id="details">
+                    </div>
+                </div>
             </div>
         </div>
     )

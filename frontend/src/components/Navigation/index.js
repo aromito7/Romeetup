@@ -13,7 +13,7 @@ function Navigation({ isLoaded }){
   if (sessionUser) {
     sessionLinks = (
     <>
-        <NavLink to={{pathname:'/groups', state: {modal: true}}} className='navbar' id='new-group'>Start a new group</NavLink>
+        <NavLink to={{pathname:'/groups/new', state: {modal: true}}} className='navbar' id='new-group'>Start a new group</NavLink>
         <NavLink to='/language' className='navbar' id='language'><i className="fa-solid fa-globe"/>English</NavLink>
         <NavLink to='/logout' className='navbar' id='logout'>Log out</NavLink>
     </>
@@ -36,6 +36,7 @@ function Navigation({ isLoaded }){
         <div className='top-right'>
             {sessionLinks}
         </div>
+        
     </div>
     // <ul>
     //   <li>

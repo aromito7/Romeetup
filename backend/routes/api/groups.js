@@ -16,10 +16,12 @@ const router = express.Router();
 const validateCreation = [
   check('name')
     .exists({ checkFalsy: true })
+    .withMessage('Name is required')
     .isLength({ max: 60})
     .withMessage('Name must be 60 characters or less'),
   check('about')
     .exists({ checkFalsy: true })
+    .withMessage('Description is required')
     .isLength({ min: 50 })
     .withMessage('About must be 50 characters or more'),
   check('type')

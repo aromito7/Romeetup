@@ -95,8 +95,8 @@ router.get(
     query.limit = where.size
     query.offset = (where.page - 1) * where.size
     query.include = [
-      {model: Group, attributes: ["id", "name", "city", "state"], include: User},
-      {model: Venue, attributes: ["id", "city", "state"]},
+      {model: Group, include: User},
+      {model: Venue},
       {model: EventImage, limit: 1, attributes: ["url"], where: {preview: true}}]
 
     if(name){
@@ -146,8 +146,8 @@ router.get(
     const { eventId } = req.params;
     const query = {}
     query.include = [
-      {model: Group, attributes: ["id", "name", "city", "state"], include: User},
-      {model: Venue, attributes: ["id", "city", "state"]},
+      {model: Group, include: User},
+      {model: Venue },
       {model: EventImage, limit: 1, attributes: ["url"], where: {preview: true}}]
     const event = await Event.findByPk(eventId, query)
     if(event){

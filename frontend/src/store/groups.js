@@ -52,8 +52,10 @@ export const createNewGroup = (options) => async dispatch => {
   options = {...options, method:"POST"}
   // console.log("Create new group reducer:")
   // console.log(options)
+  console.log(options.body)
   const response = await csrfFetch('/api/groups', options);
-  const group = await response.json();
+  const group = response.json();
+  console.log(group)
   dispatch(addGroup(group))
   return group
 }
