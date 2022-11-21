@@ -32,7 +32,7 @@ export default () => {
         <>
             <button onClick={onClickDelete} id="show-event-delete-button">Delete Event</button>
         </>
-    ):(
+    ):(false &&
         <>
             <button>Attend</button>
         </>
