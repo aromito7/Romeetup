@@ -123,7 +123,9 @@ module.exports = {
         venueId: 7,
         groupId: 7,
         name: "Sunday night Among Us",
-        description: "Murder your friends and gaslight the innocent into accusing each other.",
+        description: `Among Us[c] is a 2018 online multiplayer social deduction game developed and published by American game studio Innersloth. The game was inspired by the party game Mafia[10][11] and the science fiction horror film The Thing.[11] The game allows for cross-platform play, first released on iOS and Android devices in June 2018 and on Windows later that year in November. The game was then ported to the Nintendo Switch in December 2020, and on the PlayStation 4, PlayStation 5, Xbox One and Xbox Series X/S in December 2021. While the game was initially released in 2018 to little mainstream attention, it received a massive influx of popularity in 2020 due to many well-known Twitch streamers and YouTubers playing it. A separate VR version of the game, Among Us VR, was released in November 2022.
+
+        Among Us takes place in space-themed settings where players are colorful armless cartoon astronauts; Each player takes on one of two roles: most are Crewmates, but a small number play Impostors,[d] which appear identical to Crewmates. The goal of the Crewmates is to either identify and vote out the Impostors, or to complete all the tasks around the map; the goal of the Impostors is to covertly sabotage the mission either by killing the Crewmates before they complete all their tasks or by triggering a disaster that is not resolved in time.`,
         type: "Online",
         capacity: 15,
         price: 0,

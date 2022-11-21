@@ -76,7 +76,6 @@ const validateEvent = [
     .isNumeric()
     .withMessage('Capacity must be an integer'),
   check('price')
-    .exists({ checkFalsy: true })
     .isNumeric()
     .withMessage("Price is invalid"),
   check('description')
@@ -84,12 +83,14 @@ const validateEvent = [
     .withMessage("Description is required"),
   check('startDate')
     .exists({ checkFalsy: true })
-    .custom((startDate) => new Date(startDate) - new Date() > 0)
-    .withMessage("Start date must be in the future"),
+    .withMessage("Start date must exist"),
+    // .custom((startDate) => new Date(startDate) - new Date() > 0)
+    // .withMessage("Start date must be in the future"),
   check('endDate')
     .exists({ checkFalsy: true })
-    .custom((endDate, {req}) => new Date(endDate) - new Date(req.body.startDate) > 0)
-    .withMessage("End date must be after the start date"),
+    .withMessage("End date must exist"),
+    // .custom((endDate, {req}) => new Date(endDate) - new Date(req.body.startDate) >= 0)
+    // .withMessage("End date cannot be before the start date"),
   handleValidationErrors
 ];
 
@@ -451,10 +452,10 @@ router.post(
   restoreUser,
   requireAuth,
   async (req, res, next) => {
-    const { name, about, type, private, city, state } = req.body
+    const { name, about, type, private, city, state, previewImage } = req.body
     const { user } = req
     const organizerId = user.id
-    const newGroup = await Group.create({ organizerId, name, about, type, private, city, state})
+    const newGroup = await Group.create({ organizerId, name, about, type, private, city, state, previewImage})
 
     // const newMember = await Membership.create({  // I originally thought that organizers needed to be in the members list but the requirements state otherwise.
     //   userId: user.id,
@@ -468,7 +469,8 @@ router.post(
       type,
       private,
       city,
-      state
+      state,
+      previewImage
     });
   }
 );

@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         inFuture(date){
-          if(new Date(date) - new Date() < 0){
+          if(new Date(date) - new Date() < -86400000){
             throw new Error("The start date has already passed.")
           }
         }
