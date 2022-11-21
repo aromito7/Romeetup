@@ -17,6 +17,9 @@ export default () => {
         dispatch(deleteEvent(id)).then(history.push("/"))
     }
 
+    const redirectToGroup = (groupId) => {
+        history.push(`/groups/${groupId}`)
+    }
 
     const event = useSelector(state => state.events.event)
     const currentUser = useSelector(state => state.session.user) || {id: -1}
@@ -27,8 +30,7 @@ export default () => {
     // console.log(`${event.Group.organizerId} ${currentUser.id}`)
     const FooterButtons = () => (currentUser.id === event.Group.organizerId ? (
         <>
-            <button onClick={onClickDelete}>Delete Event</button>
-            <button>Edit Event</button>
+            <button onClick={onClickDelete} id="show-event-delete-button">Delete Event</button>
         </>
     ):(
         <>
@@ -41,7 +43,7 @@ export default () => {
                 <div id="event-title">
                     <h1>{event.name}</h1>
                     <div id="event-host">
-                        <i className="fa-solid fa-user fa-2x"/>
+                        <i className="fa-solid fa-user fa-4x"/>
                         <div id="hosted-by">
                             <p>Hosted By:</p>
                             <p id="host-name">{`${event.Group.User.firstName} ${event.Group.User.lastName}`}</p>
@@ -52,12 +54,12 @@ export default () => {
             <div id="event-details-container">
                 <div id="event-details">
                     <div id="show-event-left">
-                        <img src={event.EventImages[0].url}/>
+                        <img src={event.EventImages[0] ? event.EventImages[0].url : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png"}/>
                         <h2>Details:</h2>
                         <p>{event.description}</p>
                     </div>
                     <div id="show-event-right">
-                        <div id="event-group-container">
+                        <div id="event-group-container" onClick={() => history.push(`/groups/${event.Group.id}`)}>
                             <img src={event.Group.previewImage}/>
                             <div id="event-group-details">
                                 <p id="event-group-name">{event.Group.name}</p>
@@ -67,9 +69,7 @@ export default () => {
                         <div id="right-event-details">
                             <i className="fa-solid fa-clock fa-lg"></i>
                             <div id="event-details-date">
-                                <p id="dates">{(event.startDate ? event.startDate : Date())
-                                .match(/^\w{3} \w{3} \d{1,2} \d{4}/) + " to " + (event.endDate ? event.endDate : Date())
-                                .match(/^\w{3} \w{3} \d{1,2} \d{4}/)}</p>
+                                <p id="dates">{(event.startDate ? event.startDate : Date()).split('T')[0] + " to " + (event.endDate ? event.endDate : Date()).split('T')[0]}</p>
                             </div>
                             <i className="fa-solid fa-location-dot fa-lg"></i>
                             <div id="event-details-venue">

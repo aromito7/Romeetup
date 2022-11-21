@@ -4,6 +4,7 @@ import * as groupActions from "../../store/groups";
 import './FindPage.css'
 import { NavLink, Switch, Route, useHistory} from "react-router-dom";
 import { useEffect, useState } from "react";
+import onlineLogo from '../../images/onlineEvent.png'
 
 const FindPage = () => {
     const dispatch = useDispatch()
@@ -71,21 +72,27 @@ const FindPage = () => {
                     events.map((event, i) => {
                         return(
                             <div className="result" key={i} onClick={() => history.push("/events/" + event.id)}>
-                                <div>
-                                    <img alt={`${event.name}`} src={event.EventImages[0].url}/>
+                                <div id="find-event-result-image-container">
+                                    {event.type === 'Online' && <div className="online-logo">
+                                        <img alt={`${event.name}-online`} className='online-logo' src={onlineLogo}/>
+                                    </div>}
+                                    <img className="event-preview-image" alt={`${event.name}`} src={event.EventImages[0] ? event.EventImages[0].url : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png"}/>
                                 </div>
-                                <div>
-                                    <p>
-                                        {event.startDate}
+                                <div className="event-details-card">
+                                    <p id="event-result-details-date">
+                                        {event.startDate ? event.startDate.split('T')[0] : ''}
                                     </p>
-                                    <p>
+                                    <p id="event-result-details-name">
                                         {`${event.name} - ${event.type}`}
                                     </p>
                                     <p>
                                         {event.Group.name}
                                     </p>
                                     <p>
-                                        {event.Venue.city}, {event.Venue.state}
+                                        {event.type === "Online" ? "Online" : `${event.Venue.city}, ${event.Venue.state}`}
+                                    </p>
+                                    <p>
+                                        {event.startDate}
                                     </p>
                                 </div>
                             </div>
@@ -96,33 +103,34 @@ const FindPage = () => {
                 </Route>
                 <Route path="/find/groups">
                 <div id="results">
-                    <div id="location-options">
-                        <div id="location">
-                            Events Near Pittsburgh, PA
+                <div id="location">
+                        <div id="city-state">
+                            Friend groups near Pittsburgh, PA
                         </div>
-                        <div id="options">
-                            Search Options
+                        <div id="location-options">
+                            <select id="event-distances">{distances.map((distance, i) => (<option key={i}>{distance}</option>))}</select>
+                            <select id="event-categories">{categories.map((category, i) => (<option key={i}>{category}</option>))}</select>
                         </div>
                     </div>
                     {
                     groups.map((group, i) => {
                         return(
                             <div className="result" key={i} onClick={() => history.push("/groups/" + group.id)}>
-                                <div>
+                                <div id="find-group-result-image-container">
                                     <img alt={`${group.name}`} src={group.previewImage || "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png"}/>
                                 </div>
                                 <div>
-                                    <p>
-                                        {group.type}
+                                    <p id="group-result-name">
+                                        {`${group.name}`}
+                                    </p>
+                                    <p id="group-result-location">
+                                        {group.type === "In person" ? `${group.city}, ${group.state}` : "Online group"}
+                                    </p>
+                                    <p id="group-result-description">
+                                        {group.about?.length > 125 ? group.about.slice(0, 125) + "..." : group.about}
                                     </p>
                                     <p>
-                                        {`${group.name} - ${group.type}`}
-                                    </p>
-                                    <p>
-                                        Members: {group.numMembers}
-                                    </p>
-                                    <p>
-                                        {group.city}, {group.state}
+                                        {group.numMembers || 1} members &#x2022; {group.private ? "Private" : "Public"}
                                     </p>
                                 </div>
                             </div>

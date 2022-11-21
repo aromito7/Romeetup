@@ -20,21 +20,25 @@ export default () => {
     }
 
     const onClickEdit = () => {
-        <Redirect to="/group/new" group={group}/>
+        history.push(`/groups/${id}/edit`)
+    }
+
+    const onClickCreateEvent = () => {
+        history.push(`/groups/${id}/events/new`)
     }
 
     const group = useSelector(state => state.groups.group)
     // console.log("Group: ")
     // console.log(group)
     if(!group) return "No current group"
-    console.log(currentUser, userId, group.organizerId)
+    //console.log(currentUser, userId, group.organizerId)
     const UserButtons = () => userId === group.organizerId ? (
         <>
-            <button className="right-options">Create an event</button>
+            <button className="right-options" onClick={onClickCreateEvent}>Create an event</button>
             <button className="right-options" onClick={onClickEdit}>Edit group</button>
             <button className="right-options" onClick={onClickDelete}>Delete this group</button>
         </>
-    ) : <button className="right-options">Join this group</button>
+    ) : <></>//<button className="right-options">Join this group</button>
 
     return(
         <div id="show-group">
@@ -42,15 +46,15 @@ export default () => {
                 <img src={group.previewImage}/>
                 <div id="group-details">
                     <h1>{group.name}</h1>
-                    <div class="group-details-top-div">
+                    <div className="group-details-top-div">
                         <i className="fa-solid fa-location-dot"/>
                         <p>{group.city ? `${group.city}, ${group.state}`: "Online"}</p>
                     </div>
-                    <div class="group-details-top-div">
+                    <div className="group-details-top-div">
                         <i className="fa-solid fa-user-group"/>
                         <p>1 Members - {group.private ? "Public" : "Private"}</p>
                     </div>
-                    <div class="group-details-top-div">
+                    <div className="group-details-top-div">
                         <i className="fa-solid fa-user"/>
                         <p>Organized by <strong>{group.User.firstName} {group.User.lastName}</strong></p>
                     </div>
@@ -66,12 +70,12 @@ export default () => {
             <div id="group-option-bar-container">
                 <div id="group-option-bar">
                     <div id="group-option-bar-left">
-                        <button>About</button>
+                        {false && <><button>About</button>
                         <button>Events</button>
                         <button>Members</button>
                         <button>Photos</button>
                         <button>Discussions</button>
-                        <button>More</button>
+                        <button>More</button></>}
                     </div>
                     <div id="group-option-bar-right">
                         <UserButtons/>

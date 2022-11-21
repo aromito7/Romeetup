@@ -4,7 +4,15 @@ const SET_GROUP = '/groups/setGroup'
 const SET_GROUPS = '/groups/setGroups';
 const ADD_GROUP = '/groups/addGroup'
 const REMOVE_GROUPS = '/groups/removeGroups';
-const REMOVE_GROUP = '/groups/removeGroup'
+const REMOVE_GROUP = '/groups/removeGroup';
+const EDIT_GROUP = '/groups/editGroup';
+
+const editGroup = (group) => {
+  return {
+    type: EDIT_GROUP,
+    payload: group
+  }
+}
 
 const addGroup = (group) => {
     return {
@@ -52,10 +60,10 @@ export const createNewGroup = (options) => async dispatch => {
   options = {...options, method:"POST"}
   // console.log("Create new group reducer:")
   // console.log(options)
-  console.log(options.body)
+  //console.log(options.body)
   const response = await csrfFetch('/api/groups', options);
   const group = response.json();
-  console.log(group)
+  //console.log(group)
   dispatch(addGroup(group))
   return group
 }
@@ -73,6 +81,17 @@ export const searchGroups = (params) => async dispatch => {
   const groups = await response.json();
   dispatch(setGroups(groups));
   return groups
+}
+
+export const editCurrentGroup = (options) => async dispatch => {
+  options = {...options, method:'PUT'}
+  const id = options.groupId
+  const url = `/api/groups/${id}`
+  // console.log(url, id, options.body)
+  const response = await csrfFetch(url, options);
+  const group = response.json();
+  // dispatch(editGroup(JSON.parse(options.body)))
+  return group
 }
 
 const initialState = { group: null, groups: [] };
@@ -100,7 +119,13 @@ const groupReducer = (state = initialState, action) => {
       newState = Object.assign({}, state);
       newState.groups = [];
       return newState;
-    default:
+    case EDIT_GROUP:
+      newState = Object.assign({}, state);
+      newState.groups = newState.groups.filter(group => group.id !== action.payload.id)
+      newState.groups = [...newState.groups, action.payload]
+      newState.group = action.payload
+      return newState;
+      default:
       return state;
   }
 };

@@ -12,6 +12,8 @@ import FindPage from './components/FindPage/index'
 import CreateGroupPage from './components/CreateGroupPage';
 import ShowEvent from './components/ShowEvent';
 import ShowGroup from './components/ShowGroup';
+import EditGroupPage from './components/EditGroupPage';
+import CreateEventPage from './components/CreateEventPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -43,6 +45,12 @@ function App() {
             </Route>
             <Route path="/groups/new">
               <CreateGroupPage/>
+            </Route>
+            <Route path="/groups/:groupId/edit">
+              <EditGroupPage/>
+            </Route>
+            <Route path="/groups/:groupId/events/new">
+              <CreateEventPage/>
             </Route>
             <Route path="/events/:eventId">
               <ShowEvent/>

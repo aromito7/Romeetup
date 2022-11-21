@@ -104,3 +104,11 @@
     z-index: -1;
     mix-blend-mode: multiply;
 }
+
+.homepage-third{
+    color: rgb(0, 130, 148);
+    cursor: pointer;
+}
+
+#nu1, #nu2, #nu3 .homepage-third{
+}

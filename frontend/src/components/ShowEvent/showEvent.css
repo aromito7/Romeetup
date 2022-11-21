@@ -52,9 +52,12 @@
 }
 
 #event-details-venue{
+    margin-left:20px;
     grid-column: 2/9;
     justify-self: left;
     text-align: left;
+    display: flex;
+    flex-direction: column;
 }
 
 #event-details-venue-name, #event-details-venue-address{
@@ -80,6 +83,7 @@ h1, h2, p{
     align-items: center;
     padding: 0 0 0 25px;
     text-align: left;
+    cursor: pointer;
 }
 
 #event-group-container img{
@@ -149,6 +153,7 @@ img{
 #event-title h1{
     margin: 25px 25px 10px 0;
     font-weight: bolder;
+    color: rgb(0, 130, 148);
 }
 
 
@@ -160,8 +165,13 @@ img{
     font-size: 12px;
     margin: 5px 0 5px 20px;
     padding: 0;
+    color: grey;
 }
 
 #host-name{
     font-weight: bold;
+}
+
+#show-event-delete-button{
+    cursor: pointer;
 }

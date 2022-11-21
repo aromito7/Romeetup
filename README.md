@@ -1,10 +1,10 @@
 # API-project
 
-# `Meetup: My first a/A project`
+# `RoMeetup: My first a/A project`
 
 ## Database Schema Design
 
-![DB Schema](/images/meetup_dbdiagram.png)
+![DB Schema](/assets/meetup_dbdiagram.png)
 ## API Documentation
 
 ## USER AUTHENTICATION/AUTHORIZATION

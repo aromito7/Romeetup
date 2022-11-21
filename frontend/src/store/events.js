@@ -4,6 +4,7 @@ const SET_EVENT = '/events/setEvent';
 const SET_EVENTS = '/events/setEvents';
 const REMOVE_EVENTS = '/events/removeEvents';
 const REMOVE_EVENT = '/events/removeEvent'
+const ADD_EVENT = '/events/addEvent'
 
 const setEvents = (events) => {
   return {
@@ -29,6 +30,13 @@ const removeEvent = (id) => {
   return {
     type: REMOVE_EVENT,
     payload: id
+  }
+}
+
+const addEvent = (event) => {
+  return {
+    type: ADD_EVENT,
+    payload: event
   }
 }
 
@@ -61,11 +69,28 @@ export const searchEvents = () => async dispatch => {
   return events
   }
 
+export const createNewEvent = (options) => async dispatch => {
+  options = {...options, method:"POST"}
+  const {groupId} = options
+  // console.log("Create new group reducer:")
+  // console.log(options)
+  //console.log(options.body)
+  const response = await csrfFetch(`/api/groups/${groupId}/events`, options).then(res => res);
+  //console.log(group)
+  const newEvent = {...JSON.parse(options.body), groupId}
+  //dispatch(addEvent(newEvent))
+  return newEvent
+}
+
 
 const initialState = { event: null, events: [] };
 const eventReducer = (state = initialState, action) => {
   let newState;
   switch (action.type) {
+    case ADD_EVENT:
+      newState = Object.assign({}, state);
+      newState.events = [...newState.events, action.payload];
+      return newState;
     case SET_EVENT:
       newState = Object.assign({}, state);
       newState.event = action.payload;

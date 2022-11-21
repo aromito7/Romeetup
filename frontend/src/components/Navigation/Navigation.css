@@ -77,14 +77,14 @@
     width: auto;
 }
 
-#show-modal{
+#show-user-modal{
     height: 40px;
     width: 40px;
     margin-top: 0px;
     border-radius: 40px;
 }
 
-#nav-user-modal{
+.nav-modal{
     position: absolute;
     background-color: rgb(246, 247 ,248);
     right: 0;
@@ -93,5 +93,36 @@
 }
 
 #nav-user-modal p{
+    cursor: pointer;
+}
+
+
+#nav-login-modal{
+    top: 40px;
+    left: 25%;
+    width: 50%;
+    height: 150px;
+    border-radius: 20px;
+    padding-top: 50px;
+}
+
+#nav-signup-modal{
+    top: 40px;
+    left: 25%;
+    width: 50%;
+    height: 300px;
+    border-radius: 20px;
+    padding-top: 50px;
+}
+
+#nav-login-modal label{
+    font-size: 20px;
+    margin-top: 10px;
+    color: rgb(0, 130, 148);
+}
+
+#nav-login, #nav-signup{
+    border: none;
+    background-color: white;
     cursor: pointer;
 }

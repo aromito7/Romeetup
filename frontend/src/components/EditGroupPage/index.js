@@ -1,24 +1,39 @@
-import "./CreateGroupPage.css"
+import "./EditGroupPage.css"
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as groupActions from "../../store/groups";
-import { Redirect } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import { getGroup, deleteGroup } from "../../store/groups"
 
 export default () => {
-    const modal = true
+    const currentUser = useSelector(state => state.session.user)
+    const {groupId} = useParams()
     const history = useHistory()
     const dispatch = useDispatch()
+    // const currentState = useSelector(state => state)
+    // console.log("state")
+    // console.log(currentState)
+    useEffect(() => {
+        dispatch(getGroup(groupId)).then(1 + 1)
+    }, [dispatch])
+    const group = useSelector(state => state.groups.group) || {}
+    const user = useSelector(state => state.session.user)
+
+    if(!group) history.push(`/groups/${groupId}`)
+    //if(user && user.id !== group.organizerId) history.push(`/groups/${groupId}`)
+
+    const modal = true
     const [hasSubmitted, setHasSubmitted] = useState(false)
     const [errors, setErrors] = useState([])
-    const [name, setName] = useState('')
-    const [about, setAbout] = useState('')
-    const [type, setType] = useState('In person')
-    const [isPrivate, setIsPrivate] = useState(false)
-    const [city, setCity] = useState('')
-    const [state, setState] = useState('')
-    const [numMembers, setNumMembers] = useState(1)
-    const [previewImage, setPreviewImage] = useState('')
+    const [name, setName] = useState(group.name || '')
+    const [about, setAbout] = useState(group.about || '')
+    const [type, setType] = useState(group.type || "In person")
+    const [isPrivate, setIsPrivate] = useState(group.private || true)
+    const [city, setCity] = useState(group.city || "")
+    const [state, setState] = useState(group.state || "")
+    const [numMembers, setNumMembers] = useState(group.numMembers || 1)
+    const [previewImage, setPreviewImage] = useState(group.previewImage || "")
 
 
     useEffect(() => {
@@ -50,9 +65,9 @@ export default () => {
             previewImage
         }
 
-        const options = {body: JSON.stringify(newGroup)}
+        const options = {body: JSON.stringify(newGroup), groupId:group.id}
         if(errors.length > 0) return
-        const res = dispatch(groupActions.createNewGroup(options))
+        const res = dispatch(groupActions.editCurrentGroup(options))
             .then(<Redirect to="/"/>)
             .catch(async (res) => {
             const data = await res.json();
@@ -61,11 +76,10 @@ export default () => {
         if(errors.length === 0) history.push("/")
         return res
       }
-
     return(
     <div id='create-group-page' className={modal ? "modal" : undefined}>
         <h1 id="create-group-title" className="modal-content">
-            Create a new group:
+            Edit your group:
         </h1>
         <form id="create-group-form" className="modal-content" onSubmit={handleSubmit}>
             <label>Group name: <input value={name} onChange={e => setName(e.target.value)}/></label>
