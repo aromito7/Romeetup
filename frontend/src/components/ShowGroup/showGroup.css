@@ -56,6 +56,7 @@
     grid-template-columns: 5fr 4fr;
     width: 1000px;
     margin: auto;
+    padding-top: 7px;
 }
 
 #group-option-bar-container{
@@ -64,6 +65,7 @@
     top: -10px;
     background-color: white;
     z-index: 999;
+    height: 60px;
 }
 
 #group-option-bar-left{

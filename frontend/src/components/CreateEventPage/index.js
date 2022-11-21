@@ -59,7 +59,7 @@ export default () => {
             const data = await res.json();
             if (data && data.errors) setErrors(data.errors);
           });
-        if(errors.length === 0) history.push("/")
+        if(errors.length === 0) history.push(`/groups/${groupId}`)
         return res
       }
 

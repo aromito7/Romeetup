@@ -14,7 +14,7 @@ export default () => {
     }, [dispatch])
 
     const onClickDelete = async() => {
-        dispatch(deleteEvent(id)).then(history.push("/"))
+        dispatch(deleteEvent(id)).then(history.push("/find"))
     }
 
     const redirectToGroup = (groupId) => {

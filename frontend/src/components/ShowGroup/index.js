@@ -16,7 +16,7 @@ export default () => {
     }, [dispatch])
 
     const onClickDelete = async() => {
-        dispatch(deleteGroup(id)).then(history.push("/"))
+        dispatch(deleteGroup(id)).then(history.push("/find/groups"))
     }
 
     const onClickEdit = () => {

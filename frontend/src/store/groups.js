@@ -125,7 +125,7 @@ const groupReducer = (state = initialState, action) => {
       newState.groups = [...newState.groups, action.payload]
       newState.group = action.payload
       return newState;
-      default:
+    default:
       return state;
   }
 };
