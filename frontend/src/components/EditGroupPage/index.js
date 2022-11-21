@@ -38,7 +38,6 @@ export default () => {
 
     useEffect(() => {
         const validationErrors = []
-        console.log(isPrivate)
         if(!name) validationErrors.push("Group name is required")
         if(name && name.length < 5 || name.length > 60) validationErrors.push("Group name must be between 5 and 60 characters")
         if(type === "In person" && !city) validationErrors.push("City is required for In person groups.")

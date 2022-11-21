@@ -97,7 +97,7 @@ module.exports = {
         city: 'Pittsburgh',
         state: 'PA',
         numMembers: 5,
-        previewImage: "https://mentalmars.b-cdn.net/wp-content/uploads/2016/05/Heroes_of_the_Storm_Wallpaper_-_Preview.jpg"
+        previewImage: "https://i.pcmag.com/imagery/articles/05igsUpNyvUwzFGsEFGydTN-1.fit_lim.size_1600x900.v1657469410.jpg"
       }
     ], {});
   },
