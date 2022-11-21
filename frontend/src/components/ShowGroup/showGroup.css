@@ -37,11 +37,15 @@
     color: rgb(33, 33, 33)
 
 }
-
 .group-details-top-div{
     display: grid;
     grid-template-columns: 1fr 15fr;
     margin-top: 10px;
+
+}
+
+#group-details-location-p{
+    color: rgb(0, 130, 148);
 }
 
 #group-details-bottom-icons{

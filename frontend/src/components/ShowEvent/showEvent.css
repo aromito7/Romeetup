@@ -3,6 +3,10 @@
     height: 100%;
 }
 
+#show-event *{
+    color: grey;
+}
+
 #event-details-container{
     background-color: rgba(244 , 244, 255);
     margin-bottom: 100px;
@@ -174,4 +178,33 @@ img{
 
 #show-event-delete-button{
     cursor: pointer;
+    background-color: rgb(246, 88, 88);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    height: 40px;
+}
+
+#reminder p{
+    font-size: x-large;
+    color: black;
+    font-weight: bold;
+}
+
+#show-event-left h2{
+    color: black;
+    font-weight:bold;
+}
+
+#group-description h2{
+    font-weight: bold;
+}
+
+#group-description-about, #event-group-organizers{
+    color: grey;
+}
+
+#event-host-name{
+    color: black;
+    font-weight: bold;
 }

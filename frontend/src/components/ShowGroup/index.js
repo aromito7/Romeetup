@@ -48,11 +48,11 @@ export default () => {
                     <h1>{group.name}</h1>
                     <div className="group-details-top-div">
                         <i className="fa-solid fa-location-dot"/>
-                        <p>{group.city ? `${group.city}, ${group.state}`: "Online"}</p>
+                        <p id="group-details-location-p"><strong>{group.city ? `${group.city}, ${group.state}`: "Online"}</strong></p>
                     </div>
                     <div className="group-details-top-div">
                         <i className="fa-solid fa-user-group"/>
-                        <p>1 Members - {group.private ? "Private" : "Public"}</p>
+                        <p>1 Members - <strong>{group.private ? "Private" : "Public"}</strong></p>
                     </div>
                     <div className="group-details-top-div">
                         <i className="fa-solid fa-user"/>
@@ -89,10 +89,10 @@ export default () => {
                         <p id="group-description-about">{group.about}</p>
                     </div>
                     <div id="event-group">
-                        <p>Organizers</p>
+                        <p id="event-group-organizers">Organizers</p>
                         <i className="fa-solid fa-user fa-3x"/>
                         <div id="event-host">
-                            <p>{group.User.firstName} {group.User.lastName}</p>
+                            <p id="event-host-hame">{group.User.firstName} {group.User.lastName}</p>
                             <p id="message">Message</p>
                         </div>
                     </div>
