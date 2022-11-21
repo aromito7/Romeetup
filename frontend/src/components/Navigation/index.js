@@ -37,7 +37,6 @@ function Navigation({ isLoaded }){
       .then(res => showLoginModal(false))
       .catch(async (res) => {
         const data = await res.json();
-        if (data && data.errors) setLoginErrors(data.errors);
       });
   }
 
