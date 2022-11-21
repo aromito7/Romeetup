@@ -101,21 +101,43 @@
     top: 40px;
     left: 25%;
     width: 50%;
-    height: 150px;
+    padding-bottom: 20px;
     border-radius: 20px;
     padding-top: 50px;
+}
+
+#nav-login-modal ul{
+    padding-right: 60px;
+}
+
+#nav-login-modal li{
+    color: red;
 }
 
 #nav-signup-modal{
     top: 40px;
     left: 25%;
     width: 50%;
-    height: 300px;
     border-radius: 20px;
     padding-top: 50px;
 }
 
+#nav-signup-modal ul{
+    padding-right: 100px;
+    font-size: 14px;
+}
+
+#nav-signup-modal li{
+    color: red;
+}
+
 #nav-login-modal label{
+    font-size: 20px;
+    margin-top: 10px;
+    color: rgb(0, 130, 148);
+}
+
+#nav-signup-modal label{
     font-size: 20px;
     margin-top: 10px;
     color: rgb(0, 130, 148);

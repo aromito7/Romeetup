@@ -96,7 +96,6 @@ function Navigation({ isLoaded }){
     return dispatch(sessionActions.signup(newUser))
       .catch(async (res) => {
         const data = await res.json();
-        if (data && data.errors) setErrors(data.errors);
       });
     }
   };
@@ -108,6 +107,7 @@ function Navigation({ isLoaded }){
     if(!email) validationErrors.push("Email is required")
     if(!username) validationErrors.push("Username is required")
     if(!password) validationErrors.push("Please enter a password")
+    if(password.length < 6) validationErrors.push("Password must be at least six characters")
     if(!confirmPassword)  validationErrors.push("Please confirm password")
     if(password && confirmPassword && (password !== confirmPassword)){
       validationErrors.push("Passwords do not match")
@@ -118,7 +118,7 @@ function Navigation({ isLoaded }){
   useEffect(() => {
     const validationErrors = []
     if(!credential) validationErrors.push("Username or email is required")
-    if(!password) validationErrors.push("Username is required")
+    if(!loginPassword) validationErrors.push("Password is required")
     setLoginErrors(validationErrors)
   },[credential, loginPassword])
 
@@ -153,10 +153,7 @@ function Navigation({ isLoaded }){
         <label className='navbar'><i className="fa-solid fa-globe fa-sm"></i>English</label>
         <button className='navbar' id='nav-login' onClick={() => setShowLoginModal(!showLoginModal)}>Log in</button>
         <div hidden={!showLoginModal} id="nav-login-modal" className="nav-modal">
-          <form onSubmit={handleSubmit}>
-            <ul>
-              {hasSubmittedLogin && loginErrors.map((error, idx) => <li key={idx}>{error}</li>)}
-            </ul>
+          <form noValidate={true} onSubmit={handleSubmit}>
             <label>
               Username or Email
               <input
@@ -173,19 +170,17 @@ function Navigation({ isLoaded }){
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
                   required
-                />
+                  />
               </label>
-              <button type="submit">Log In</button>
+              <ul>
+                {hasSubmittedLogin && loginErrors.map((error, idx) => <li key={idx}>{error}</li>)}
+              </ul>
+              <button type="submit" formNoValidate={true}>Log In</button>
             </form>
         </div>
         <button className='navbar' id='nav-signup' onClick={() => {setShowSignUpModal(true); setShowLoginModal(false)}}>Sign up</button>
         <div hidden={!showSignUpModal} id="nav-signup-modal" className="nav-modal" ref={ref}>
-          <form onSubmit={handleSubmitSignup} id='signup'>
-          {hasSubmitted &&
-          <ul>
-            {errors.map((error, idx) => <li key={idx}>{error}</li>)}
-          </ul>
-          }
+          <form noValidate={true} onSubmit={handleSubmitSignup} id='signup'>
           <label>
             First Name
             <input
@@ -193,7 +188,7 @@ function Navigation({ isLoaded }){
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
-            />
+              />
           </label>
           <label>
             Last Name
@@ -211,7 +206,7 @@ function Navigation({ isLoaded }){
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-            />
+              />
           </label>
           <label>
             Username
@@ -220,7 +215,7 @@ function Navigation({ isLoaded }){
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-            />
+              />
           </label>
           <label>
             Password
@@ -229,7 +224,7 @@ function Navigation({ isLoaded }){
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-            />
+              />
           </label>
           <label>
             Confirm Password
@@ -238,8 +233,13 @@ function Navigation({ isLoaded }){
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-            />
+              />
           </label>
+          {hasSubmitted &&
+          <ul>
+            {errors.map((error, idx) => <li key={idx}>{error}</li>)}
+          </ul>
+          }
           <button type="submit" formNoValidate={true}>Sign Up</button>
         </form>
       </div>
