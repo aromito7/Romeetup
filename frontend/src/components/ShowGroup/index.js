@@ -52,7 +52,7 @@ export default () => {
                     </div>
                     <div className="group-details-top-div">
                         <i className="fa-solid fa-user-group"/>
-                        <p>1 Members - {group.private ? "Public" : "Private"}</p>
+                        <p>1 Members - {group.private ? "Private" : "Public"}</p>
                     </div>
                     <div className="group-details-top-div">
                         <i className="fa-solid fa-user"/>

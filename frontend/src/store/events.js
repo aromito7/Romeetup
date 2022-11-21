@@ -72,14 +72,10 @@ export const searchEvents = () => async dispatch => {
 export const createNewEvent = (options) => async dispatch => {
   options = {...options, method:"POST"}
   const {groupId} = options
-  // console.log("Create new group reducer:")
-  // console.log(options)
-  //console.log(options.body)
-  const response = await csrfFetch(`/api/groups/${groupId}/events`, options).then(res => res);
-  //console.log(group)
-  const newEvent = {...JSON.parse(options.body), groupId}
-  //dispatch(addEvent(newEvent))
-  return newEvent
+  const response = await csrfFetch(`/api/groups/${groupId}/events`, options);
+  const event = await csrfFetch('/api/groups/${groupId}')
+  dispatch(addEvent(event));
+  return event
 }
 
 

@@ -29,7 +29,7 @@ export default () => {
     const [name, setName] = useState(group.name || '')
     const [about, setAbout] = useState(group.about || '')
     const [type, setType] = useState(group.type || "In person")
-    const [isPrivate, setIsPrivate] = useState(group.private || true)
+    const [isPrivate, setIsPrivate] = useState(group.private)
     const [city, setCity] = useState(group.city || "")
     const [state, setState] = useState(group.state || "")
     const [numMembers, setNumMembers] = useState(group.numMembers || 1)
@@ -38,7 +38,7 @@ export default () => {
 
     useEffect(() => {
         const validationErrors = []
-
+        console.log(isPrivate)
         if(!name) validationErrors.push("Group name is required")
         if(name && name.length < 5 || name.length > 60) validationErrors.push("Group name must be between 5 and 60 characters")
         if(type === "In person" && !city) validationErrors.push("City is required for In person groups.")
@@ -49,7 +49,7 @@ export default () => {
 
 
         setErrors(validationErrors)
-    },[name, about, type, city, state])
+    },[name, about, type, city, state, isPrivate])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -90,7 +90,7 @@ export default () => {
                 </select>
             </label>
             <label>Private:
-                <input type="checkbox" value={isPrivate} id="private" onChange={e => setIsPrivate(e.target.value)}/>
+                <input type="checkbox" checked={isPrivate} id="private" onChange={e => setIsPrivate(!isPrivate)}/>
             </label>
             <label>City: <input value={city} onChange={e => setCity(e.target.value)}/></label>
             <label>State <input value={state} onChange={e => setState(e.target.value)}/></label>

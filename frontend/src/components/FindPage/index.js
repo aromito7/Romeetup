@@ -77,7 +77,7 @@ const FindPage = () => {
                                     {event.type === 'Online' && <div className="online-logo">
                                         <img alt={`${event.name}-online`} className='online-logo' src={onlineLogo}/>
                                     </div>}
-                                    <img className="event-preview-image" alt={`${event.name}`} src={event.EventImages[0] ? event.EventImages[0].url : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png"}/>
+                                    <img className="event-preview-image" alt={`${event.name}`} src={(event && event.EventImages && event.EventImages.length > 0 && event.EventImages[0]) ? event.EventImages[0].url : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png"}/>
                                 </div>
                                 <div className="event-details-card">
                                     <p id="event-result-details-date">
@@ -91,9 +91,6 @@ const FindPage = () => {
                                     </p>
                                     <p>
                                         {event.type === "Online" ? "Online" : `${event.Venue.city}, ${event.Venue.state}`}
-                                    </p>
-                                    <p>
-                                        {event.startDate}
                                     </p>
                                 </div>
                             </div>
