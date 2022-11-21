@@ -42,6 +42,7 @@ const FindPage = () => {
     const groups = useSelector(state => state.groups.groups)
 
     if(events.length < 1 || groups.length < 1) return
+    if(!groups.slice(-1)[0].name || !events.slice(-1)[0].name) return
     return (
     <div id="search-page">
         <div id="events-groups-toggle">

@@ -84,7 +84,10 @@ export default () => {
             </div>
             <div id="group-description-container">
                 <div id="group-description">
-                    <p>{group.about}</p>
+                    <div>
+                        <h2>What we're about</h2>
+                        <p id="group-description-about">{group.about}</p>
+                    </div>
                     <div id="event-group">
                         <p>Organizers</p>
                         <i className="fa-solid fa-user fa-3x"/>
