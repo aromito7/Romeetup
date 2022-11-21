@@ -37,6 +37,7 @@ function Navigation({ isLoaded }){
       .then(res => showLoginModal(false))
       .catch(async (res) => {
         const data = await res.json();
+        if (data && data.errors) setLoginErrors(data.errors);
       });
   }
 
@@ -95,6 +96,7 @@ function Navigation({ isLoaded }){
     return dispatch(sessionActions.signup(newUser))
       .catch(async (res) => {
         const data = await res.json();
+        if (data && data.errors) setErrors(data.errors);
       });
     }
   };
