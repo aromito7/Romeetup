@@ -1,8 +1,14 @@
 'use strict';
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 module.exports = {
   async up (queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('GroupImages', [
+    options.tableName = 'GroupImages'
+    return queryInterface.bulkInsert(options, [
       {
         groupId: 1,
         url: "https://media4.giphy.com/media/xUPGcmvgjMIEhy6jZu/giphy.gif?cid=790b76116b17fc1a2b759464554516a3bbcc58d85fb8b3f3&rid=giphy.gif&ct=g",
@@ -43,6 +49,8 @@ module.exports = {
   },
   async down (queryInterface, Sequelize) {
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete('GroupImages', {}, {});
+    options.tableName = "GroupImages"
+    return queryInterface.bulkDelete(options);
+    // return queryInterface.bulkDelete('GroupImages', {}, {});
   }
 };

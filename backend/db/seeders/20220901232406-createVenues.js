@@ -1,9 +1,14 @@
 'use strict';
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('Venues', [
+    options.tableName = 'Venues'
+    return queryInterface.bulkInsert(options, [
       {
         groupId: 1,
         address: "a/A Discord",
@@ -66,8 +71,10 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete('Venues', {
-      address: { [Op.in]: ["a/A Discord", "Arsenal Tennis Courts", "North Side", "Convention Center"]}
-    }, {});
+    options.tableName = "Venues"
+    return queryInterface.bulkDelete(options);
+    // return queryInterface.bulkDelete('Venues', {
+    //   address: { [Op.in]: ["a/A Discord", "Arsenal Tennis Courts", "North Side", "Convention Center"]}
+    // }, {});
   }
 };

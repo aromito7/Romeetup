@@ -1,5 +1,10 @@
 'use strict';
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 module.exports = {
   async up (queryInterface, Sequelize) {
     /**
@@ -11,7 +16,8 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-     return queryInterface.bulkInsert('EventImages', [
+    options.tableName = 'EventImages'
+     return queryInterface.bulkInsert(options, [
       {
         eventId: 1,
         url: "https://www.mooc.org/hubfs/what-computer-programming-jobs-offer-remote-work-jpg.jpeg",
@@ -56,6 +62,8 @@ module.exports = {
   },
   async down (queryInterface, Sequelize) {
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete('EventImages', {}, {});
+    options.tableName = "EventImages"
+    return queryInterface.bulkDelete(options);
+    // return queryInterface.bulkDelete('EventImages', {}, {});
   }
 };

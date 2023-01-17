@@ -1,5 +1,10 @@
 'use strict';
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 module.exports = {
   async up (queryInterface, Sequelize) {
     /**
@@ -11,7 +16,8 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-     return queryInterface.bulkInsert('Events', [
+     options.tableName = 'Events'
+     return queryInterface.bulkInsert(options, [
       {
         venueId: 1,
         groupId: 1,
@@ -137,16 +143,18 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete('Events', {
-      name: { [Op.in]: [
-        "Practice Exam Walkthrough",
-        "Tennis Tournament",
-        "Pittsburgh Marathon",
-        "Grand Prix Pittsburgh",
-        "Drinking Game Extravaganza",
-        "Wednesday night karaoke",
-        "Sunday night Among Us"
-      ] }
-    }, {});
+    options.tableName = "Events"
+    return queryInterface.bulkDelete(options);
+    // return queryInterface.bulkDelete('Events', {
+    //   name: { [Op.in]: [
+    //     "Practice Exam Walkthrough",
+    //     "Tennis Tournament",
+    //     "Pittsburgh Marathon",
+    //     "Grand Prix Pittsburgh",
+    //     "Drinking Game Extravaganza",
+    //     "Wednesday night karaoke",
+    //     "Sunday night Among Us"
+    //   ] }
+    // }, {});
   }
 };

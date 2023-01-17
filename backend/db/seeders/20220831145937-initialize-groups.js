@@ -1,8 +1,14 @@
 'use strict';
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('Groups', [
+    options.tableName = 'Groups'
+    return queryInterface.bulkInsert(options, [
       {
         organizerId: 1,
         name: 'Homework squad',
@@ -104,8 +110,10 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete('Groups', {
-      name: { [Op.in]: ["Homework squad", "Tennis group", "Cross Country Masochists", "Cardboard dojo", 'Drinking game debauchery group', "Karaoke club", "HotS discord"] }
-    }, {});
+    options.tableName = "Groups"
+    return queryInterface.bulkDelete(options);
+    // return queryInterface.bulkDelete('Groups', {
+    //   name: { [Op.in]: ["Homework squad", "Tennis group", "Cross Country Masochists", "Cardboard dojo", 'Drinking game debauchery group', "Karaoke club", "HotS discord"] }
+    // }, {});
   }
 };

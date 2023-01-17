@@ -65,7 +65,7 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     const Op = Sequelize.Op;
     options.tableName = "Users"
-    return queryInterface.bulkInsert(options);
+    return queryInterface.bulkDelete(options);
     // return queryInterface.bulkDelete('Users', {
     //   firstName: { [Op.in]: ['Alexander', 'Vincent', 'Vikas', 'Craig', 'Brad', 'Jason', 'Martin'] }
     // }, {});
