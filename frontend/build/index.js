@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import './index.css';
-import App from './App';
+import App from '../src/App';
 import configureStore from './store';
 import { restoreCSRF, csrfFetch } from './store/csrf';
 import sessionReducer from './store/session';
